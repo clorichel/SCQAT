@@ -107,7 +107,7 @@ class CLI extends \Symfony\Component\Console\Application
             }
 
             // Creating SCQAT Context with files gathered
-            $context = new \SCQAT\Context();
+            $context = new \SCQAT\Context($this->rootDirectory);
             $context->files = $this->files;
             // Populating context hooks
             $this->configureContextHooks($context);
