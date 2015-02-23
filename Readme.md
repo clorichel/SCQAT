@@ -1,3 +1,5 @@
+[![Version](http://img.shields.io/packagist/v/clorichel/scqat.svg?style=flat-square)](https://packagist.org/packages/clorichel/scqat) [![License](http://img.shields.io/packagist/l/clorichel/scqat.svg?style=flat-square)](https://github.com/clorichel/scqat/blob/master/LICENSE) [![Downloads](http://img.shields.io/packagist/dt/clorichel/scqat.svg?style=flat-square)](https://packagist.org/packages/clorichel/scqat)
+
 # SCQAT
 
 This is SCQAT, the **S**tandardized **C**ode **Q**uality **A**ssurance **T**ool, an open source set of utilities that ensures the quality of the code for you, your development team and your boss.
