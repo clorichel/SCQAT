@@ -7,7 +7,7 @@
 	"license": "Apache-2.0",
     "authors": [
         {
-            "name": "Pierre-Alexandre Clorichel",
+            "name": "Pierre-Alexandre Clorichel"
         }
     ],
     "bin": ["bin/scqat"],
