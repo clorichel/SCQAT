@@ -40,9 +40,9 @@ class Context
     /**
      * Initialize SCQAT Context
      */
-    public function __construct()
+    public function __construct($rootDirectory)
     {
-        $this->rootDirectory = __DIR__."/../../";
+        $this->rootDirectory = $rootDirectory;
         $this->report = new \SCQAT\Report($this);
     }
 

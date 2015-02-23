@@ -26,6 +26,12 @@ class CLI extends \Symfony\Component\Console\Application
     private $version = "0.1";
 
     /**
+     * SCQAT root directory
+     * @var string
+     */
+    private $rootDirectory = null;
+
+    /**
      * SCQAT Runner instance
      * @var \SCQAT\Runner
      */
@@ -64,11 +70,12 @@ class CLI extends \Symfony\Component\Console\Application
     /**
      * Initializing and building parent symfony/console application
      */
-    public function __construct()
+    public function __construct($rootDirectory)
     {
         $this->runner = new \SCQAT\Runner();
         date_default_timezone_set($this->timezone);
         parent::__construct($this->name, $this->version);
+        $this->rootDirectory = $rootDirectory;
     }
 
     /**
