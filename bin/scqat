@@ -1,0 +1,11 @@
+#!/usr/bin/php
+<?php
+if (file_exists(__DIR__.'/../vendor/autoload.php')) {
+	// SCQAT has been cloned from git repository
+	require __DIR__.'/../vendor/autoload.php';
+} else {
+	// SCQAT has been required through Composer
+	require __DIR__.'/../../../autoload.php';
+}
+$console = new \SCQAT\CLI();
+$console->run();
