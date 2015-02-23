@@ -2,7 +2,7 @@
 <?php
 $rootDirectory = __DIR__."/../"; // SCQAT has been cloned from git repository
 if (! file_exists($rootDirectory.'vendor/autoload.php')) {
-    $rootDirectory .= "../../../../"; // SCQAT has been required through Composer
+    $rootDirectory .= "../../../"; // SCQAT has been required through Composer
 }
 require $rootDirectory.'vendor/autoload.php';
 $console = new \SCQAT\CLI($rootDirectory);
