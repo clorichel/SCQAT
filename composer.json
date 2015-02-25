@@ -1,10 +1,10 @@
 {
-	"name": "clorichel/scqat",
-	"description" : "Standardized Code Quality Assurance Tool",
-	"version" : "0.1",
-	"type" : "library",
-	"homepage" : "https://github.com/clorichel/SCQAT",
-	"license": "Apache-2.0",
+    "name": "clorichel/scqat",
+    "description" : "Standardized Code Quality Assurance Tool",
+    "version" : "0.1",
+    "type" : "library",
+    "homepage" : "https://github.com/clorichel/SCQAT",
+    "license": "Apache-2.0",
     "authors": [
         {
             "name": "Pierre-Alexandre Clorichel"
@@ -12,7 +12,7 @@
     ],
     "bin": ["bin/scqat"],
     "require": {
-    	"php": ">=5.4",
+        "php": ">=5.4",
         "symfony/process": "2.6.4",
         "symfony/console": "2.6.4",
         "symfony/finder": "2.6.4",
@@ -21,8 +21,8 @@
         "fabpot/php-cs-fixer": "1.5"
     },
     "autoload" : {
-		"psr-4" : {
-			"SCQAT\\" : "src/SCQAT/"
-		}
-	}
+        "psr-4" : {
+            "SCQAT\\" : "src/SCQAT/"
+        }
+    }
 }
