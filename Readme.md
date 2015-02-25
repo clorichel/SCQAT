@@ -14,7 +14,7 @@ You need to run PHP 5.4 or greater.
 
 SCQAT relies on [Composer](https://getcomposer.org/) magic to manage dependencies. If you haven't already installed it, just grab `composer.phar` running the one-liner install command you will [find here](https://getcomposer.org/download/).
 
-We will assume that you will run `composer.phar` locally on a new empty directory.
+We will assume that you will run `composer.phar` locally placed in a newly created `/path/to/folder` directory.
 
 ### Install SCQAT
 
@@ -24,13 +24,26 @@ php composer.phar require clorichel/scqat:0.2
 
 Thanks to each Composer contributor, yes, that was it.
 
+#### Globally
+
+Using Linux / Unix / OSX ? Nothing simplest, run the composer require then :
+
+```
+ln -s /path/to/folder/vendor/bin/scqat /usr/local/bin/scqat
+```
+
+Command failed ? Just run again with sudo.
+In OSX ? Create `/usr/local/bin/` folder which may not exist.
+
 ## Usage
 
-Just open your console, get to an existing git repository folder and do :
+Installed globally ? Just open your console and do :
 ```
-/path/to/folder/vendor/bin/scqat
+scqat -d /path/to/sourcecode
 ```
-You've just been analyzed ! The quality report shown is self-explanatory.
+
+Your code has just been analyzed ! The quality report shown is self-explanatory.
+Not installed globally ? You have to add the path, run `/path/to/folder/vendor/bin/scqat`
 
 Have a look to the [CLI Manual](docs/CLI/Manual.md) for detailed usage.
 
@@ -63,3 +76,7 @@ For instance SCQAT does exactly what it says : it's an efficient tool to standar
 Short term work is to add support for PHPUnit and phpDocumentor, improve documentation and/or install process for system wide installation, adding `.scqat` configuration file support with "exclude analyzer" functionnality, ~~add a cli parameter to indicate which folder to analyze (to avoid the need to "be" in that directory)~~ *(done)*, add support for non git folders to analyze.
 
 Mid to long term will be working on reports to be able to export them in some usual formats (TXT, and HTML), rating and ranking with badges, and any other need that could appear.
+
+## Uninstall
+
+Nothing has been dispatched everywhere, simply remove your `/usr/local/bin/scqat` symlink (if installed globally) and the `/path/to/folder` install directory. Before doing this, you are pleased to open an issue if something went bad for you ;)

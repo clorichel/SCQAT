@@ -1,3 +1,18 @@
+## v0.3 (work in progress)
+
+Features :
+
+ - 
+
+Bugfixes :
+
+ - correctly handling "no files to analyze"
+
+Documentation :
+
+ - added global installation method
+ - added uninstall how-to
+
 ## v0.2 (2015-02-25)
 
 Features :

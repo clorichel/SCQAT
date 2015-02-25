@@ -25,7 +25,7 @@ class CLI extends \Symfony\Component\Console\Application
      * CLI Application version
      * @var string
      */
-    private $version = "0.1";
+    private $version = "0.2";
 
     /**
      * SCQAT vendor directory
@@ -139,7 +139,7 @@ class CLI extends \Symfony\Component\Console\Application
             $output->writeln("<comment>".$date->format($this->dateFormatLong)." - Analysed in ".$this->runner->duration."s</comment>");
         } else {
             $output->writeln("");
-            $output->writeln('<info>No file to analyze...</info>');
+            $output->writeln('<info>No file to analyze !</info>');
             $output->writeln("");
             // Ending date only
             $date = new \DateTime();
@@ -150,7 +150,7 @@ class CLI extends \Symfony\Component\Console\Application
         $output->writeln("<fg=white;options=bold;bg=blue>[ ".$this->name." (v".$this->version.") ]</fg=white;options=bold;bg=blue>");
 
         // Exit CLI application on error if any were found
-        if ($context->hadError !== false) {
+        if (!empty($context) && $context->hadError !== false) {
             return 1;
         }
     }
@@ -206,7 +206,9 @@ class CLI extends \Symfony\Component\Console\Application
     {
         $exploded = explode("\n", $filesList);
         foreach ($exploded as $relativeFileName) {
-            $this->files[] = $this->analyzedDirectory.$relativeFileName;
+            if (!empty($relativeFileName)) {
+                $this->files[] = $this->analyzedDirectory.$relativeFileName;
+            }
         }
     }
 
@@ -216,6 +218,7 @@ class CLI extends \Symfony\Component\Console\Application
         if (!empty($this->analyzedDirectory)) {
             $cdToAnalyzedDir = "cd ".$this->analyzedDirectory." && ";
         }
+
         return $cdToAnalyzedDir;
     }
 
