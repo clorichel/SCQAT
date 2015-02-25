@@ -1,7 +1,6 @@
 {
     "name": "clorichel/scqat",
     "description" : "Standardized Code Quality Assurance Tool",
-    "version" : "0.1",
     "type" : "library",
     "homepage" : "https://github.com/clorichel/SCQAT",
     "license": "Apache-2.0",
