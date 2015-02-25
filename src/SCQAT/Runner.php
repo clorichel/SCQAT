@@ -137,7 +137,8 @@ class Runner
                     $result = $analyzerClass->analyze($context);
                     $result->languageName = $languageName;
                     $result->analyzerName = $analyzerName;
-                    $result->fileName = $fileName;
+                    // TODO filename not set = all files used
+                    //$result->fileName = $fileName;
                     $context->report->analyzerResult($result);
                 } else {
                     foreach ($this->context->files as $fileName) {

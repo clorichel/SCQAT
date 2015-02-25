@@ -8,10 +8,16 @@ namespace SCQAT;
 class Context
 {
     /**
-     * SCQAT root directory
+     * SCQAT vendor directory
      * @var string
      */
-    public $rootDirectory = null;
+    public $vendorDirectory = null;
+
+    /**
+     * The directory selected for analysis
+     * @var string
+     */
+    public $analyzedDirectory = null;
 
     /**
      * List of files names to analyze
@@ -40,9 +46,10 @@ class Context
     /**
      * Initialize SCQAT Context
      */
-    public function __construct($rootDirectory)
+    public function __construct($vendorDirectory, $analyzedDirectory)
     {
-        $this->rootDirectory = $rootDirectory;
+        $this->vendorDirectory = $vendorDirectory;
+        $this->analyzedDirectory = $analyzedDirectory;
         $this->report = new \SCQAT\Report($this);
     }
 

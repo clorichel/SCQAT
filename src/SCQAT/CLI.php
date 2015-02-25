@@ -3,6 +3,8 @@
 namespace SCQAT;
 
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputDefinition;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 
@@ -26,10 +28,16 @@ class CLI extends \Symfony\Component\Console\Application
     private $version = "0.1";
 
     /**
-     * SCQAT root directory
+     * SCQAT vendor directory
      * @var string
      */
-    private $rootDirectory = null;
+    private $vendorDirectory = null;
+
+    /**
+     * The directory selected for analysis
+     * @var string
+     */
+    private $analyzedDirectory = null;
 
     /**
      * SCQAT Runner instance
@@ -70,12 +78,12 @@ class CLI extends \Symfony\Component\Console\Application
     /**
      * Initializing and building parent symfony/console application
      */
-    public function __construct($rootDirectory)
+    public function __construct($vendorDirectory)
     {
         $this->runner = new \SCQAT\Runner();
         date_default_timezone_set($this->timezone);
         parent::__construct($this->name, $this->version);
-        $this->rootDirectory = $rootDirectory;
+        $this->vendorDirectory = $vendorDirectory;
     }
 
     /**
@@ -103,11 +111,11 @@ class CLI extends \Symfony\Component\Console\Application
 
         if (count($this->files)) {
             foreach ($this->files as $file) {
-                $output->writeln(" - ".$file);
+                $output->writeln(" - ".str_replace($this->analyzedDirectory, "", $file));
             }
 
             // Creating SCQAT Context with files gathered
-            $context = new \SCQAT\Context($this->rootDirectory);
+            $context = new \SCQAT\Context($this->vendorDirectory, $this->analyzedDirectory);
             $context->files = $this->files;
             // Populating context hooks
             $this->configureContextHooks($context);
@@ -172,7 +180,7 @@ class CLI extends \Symfony\Component\Console\Application
 
         $context->report->addHook("Analyzing_File", function ($fileName) use ($output) {
             if (!empty($fileName)) {
-                $output->write(" - ".$fileName." ");
+                $output->write(" - ".str_replace($this->analyzedDirectory, "", $fileName)." ");
             }
         });
 
@@ -194,68 +202,55 @@ class CLI extends \Symfony\Component\Console\Application
         });
     }
 
+    private function explodeFilesList($filesList)
+    {
+        $exploded = explode("\n", $filesList);
+        foreach ($exploded as $relativeFileName) {
+            $this->files[] = $this->analyzedDirectory.$relativeFileName;
+        }
+    }
+
+    private function getCdToAnalyzedDir()
+    {
+        $cdToAnalyzedDir = "";
+        if (!empty($this->analyzedDirectory)) {
+            $cdToAnalyzedDir = "cd ".$this->analyzedDirectory." && ";
+        }
+        return $cdToAnalyzedDir;
+    }
+
     /**
      * Gathering files
      * @return boolean True if gathering went well, false on any problem
      */
     private function gatherFiles()
     {
+        $definition = new InputDefinition(array(
+            new InputOption("directory", "d", InputOption::VALUE_REQUIRED),
+            new InputOption("modified", null, InputOption::VALUE_NONE),
+            new InputOption("pre-commit", null, InputOption::VALUE_NONE),
+        ));
+        // TODO $definition->getSynopsis should be (--[modified|pre-commit])
+
+        $this->input->bind($definition);
+        $analyzedDirectory = "";
+        if (!empty($this->input->getOption("directory"))) {
+            $analyzedDirectory = rtrim($this->input->getOption("directory"), "/")."/";
+        }
+        $this->analyzedDirectory = realpath($analyzedDirectory).DIRECTORY_SEPARATOR;
+
         // User wants to analyze all modified files (staged, unstaged and untracked)
-        if ($this->input->hasParameterOption("--modified")) {
-            // Verifying that refs/remote/origin/master reference exists in current git repository
-            $revParse = new Process("git rev-parse --verify 'refs/remotes/origin/master' 2> /dev/null");
-            $revParse->run();
-
-            if (!$revParse->isSuccessful()) {
-                $this->output->writeln("<error>'refs/remotes/origin/master' reference does not exists in current folder. Is it really a git repository ? Is its remote origin correctly configured ?</error>");
-
-                return false;
-            }
-
-            // Listing staged, unstaged and untracked files changed from local revision to 'refs/remotes/origin/master' revision
-            $process = new Process("git diff-index --name-status 'refs/remotes/origin/master' | egrep '^(A|M)' | awk '{print $2;}' && git ls-files --others --exclude-standard");
-            $process->run();
-
-            if (!$process->isSuccessful()) {
-                $this->output->writeln("<error>Unable to get modified files. What's going on ?</error>");
-
-                return false;
-            }
-
-            $this->files = explode("\n", trim($process->getOutput()));
-
-            return true;
+        if ($this->input->getOption("modified") === true) {
+            return $this->gatherFilesModified();
         }
 
         // User wants to analyze all staged files (before commit)
-        if ($this->input->hasParameterOption("--pre-commit")) {
-            // Verifying that refs/remote/origin/master reference exists in current git repository
-            $revParse = new Process("git rev-parse --verify 'refs/remotes/origin/master' 2> /dev/null");
-            $revParse->run();
-
-            if (!$revParse->isSuccessful()) {
-                $this->output->writeln("<error>'refs/remotes/origin/master' reference does not exists in current folder. Is it really a git repository ? Is its remote origin correctly configured ?</error>");
-
-                return false;
-            }
-
-            // Listing staged files changed from local revision to 'refs/remotes/origin/master' revision
-            $process = new Process("git diff-index --cached --name-status 'refs/remotes/origin/master' | egrep '^(A|M)' | awk '{print $2;}'");
-            $process->run();
-
-            if (!$process->isSuccessful()) {
-                $this->output->writeln("<error>Unable to get staged files</error>");
-
-                return false;
-            }
-
-            $this->files = explode("\n", trim($process->getOutput()));
-
-            return true;
+        if ($this->input->getOption("pre-commit") === true) {
+            return $this->gatherFilesPreCommit();
         }
 
         // Default action, user wants to analyze all files in the git repository
-        $process = new Process("git ls-files");
+        $process = new Process($this->getCdToAnalyzedDir()."git ls-files");
         $process->run();
 
         if (!$process->isSuccessful()) {
@@ -264,7 +259,61 @@ class CLI extends \Symfony\Component\Console\Application
             return false;
         }
 
-        $this->files = explode("\n", trim($process->getOutput()));
+        $this->explodeFilesList(trim($process->getOutput()));
+
+        return true;
+    }
+
+    private function gatherFilesModified()
+    {
+        // Verifying that refs/remote/origin/master reference exists in current git repository
+        $revParse = new Process($this->getCdToAnalyzedDir()."git rev-parse --verify 'refs/remotes/origin/master' 2> /dev/null");
+        $revParse->run();
+
+        if (!$revParse->isSuccessful()) {
+            $this->output->writeln("<error>'refs/remotes/origin/master' reference does not exists in current folder. Is it really a git repository ? Is its remote origin correctly configured ?</error>");
+
+            return false;
+        }
+
+        // Listing staged, unstaged and untracked files changed from local revision to 'refs/remotes/origin/master' revision
+        $process = new Process($this->getCdToAnalyzedDir()."git diff-index --name-status 'refs/remotes/origin/master' | egrep '^(A|M)' | awk '{print $2;}' && git ls-files --others --exclude-standard");
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            $this->output->writeln("<error>Unable to get modified files. What's going on ?</error>");
+
+            return false;
+        }
+
+        $this->explodeFilesList(trim($process->getOutput()));
+
+        return true;
+    }
+
+    private function gatherFilesPreCommit()
+    {
+        // Verifying that refs/remote/origin/master reference exists in current git repository
+        $revParse = new Process($this->getCdToAnalyzedDir()."git rev-parse --verify 'refs/remotes/origin/master' 2> /dev/null");
+        $revParse->run();
+
+        if (!$revParse->isSuccessful()) {
+            $this->output->writeln("<error>'refs/remotes/origin/master' reference does not exists in current folder. Is it really a git repository ? Is its remote origin correctly configured ?</error>");
+
+            return false;
+        }
+
+        // Listing staged files changed from local revision to 'refs/remotes/origin/master' revision
+        $process = new Process($this->getCdToAnalyzedDir()."git diff-index --cached --name-status 'refs/remotes/origin/master' | egrep '^(A|M)' | awk '{print $2;}'");
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            $this->output->writeln("<error>Unable to get staged files</error>");
+
+            return false;
+        }
+
+        $this->explodeFilesList(trim($process->getOutput()));
 
         return true;
     }

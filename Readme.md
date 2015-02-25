@@ -32,7 +32,7 @@ Just open your console, get to an existing git repository folder and do :
 ```
 You've just been analyzed ! The quality report shown is self-explanatory.
 
-Have a look to the [CLI Manual](#cli-manual) below for detailed usage.
+Have a look to the [CLI Manual](docs/CLI/Manual.md) for detailed usage.
 
 ## What is it about
 
@@ -60,72 +60,6 @@ See `\SCQAT\Language\PHP` and `\SCQAT\Language\PHP\Analyzer\Lint` for concrete e
 
 For instance SCQAT does exactly what it says : it's an efficient tool to standardize code quality assurance. You can run it on many platforms. It installs in no time. Reports are clear and clean. One can use it on a git pre-commit hook or add it on a continuous integration stack. Little PHP development skills are required to implement new languages and analyzers.
 
-Short term work is to add support for PHPUnit and phpDocumentor, improve documentation and/or install process for system wide installation, adding `.scqat` configuration file support with "exclude analyzer" functionnality, add a cli parameter to indicate which folder to analyze (to avoid the need to "be" in that directory).
+Short term work is to add support for PHPUnit and phpDocumentor, improve documentation and/or install process for system wide installation, adding `.scqat` configuration file support with "exclude analyzer" functionnality, ~~add a cli parameter to indicate which folder to analyze (to avoid the need to "be" in that directory)~~ *(done)*, add support for non git folders to analyze.
 
 Mid to long term will be working on reports to be able to export them in some usual formats (TXT, and HTML), rating and ranking with badges, and any other need that could appear.
-
-## CLI Manual
-
-### Name
-
-scqat - Run a set of industry standard code quality analyzers on your source code files
-
-### Synopsys
-
-```
-'scqat' (--[modified|pre-commit])
-```
-
-### Description
-
-This analyzes files in the running directory (a GIT repository) with a set of quality tools and shows you a report indicating all possible errors.
-
-Default to "all files" (through a `git ls-files`). One of the options below may be used to determine the files to analyze :
-
-### Options
-
-**--modified**
-
-Analyze all modified files in the repository (staged, unstaged and untracked files changed from local revision to 'refs/remotes/origin/master' revision)
-
-**--pre-commit**
-
-Analyze all staged files changed from local revision to 'refs/remotes/origin/master' revision
-
-### Output
-
-```
-[ SCQAT - Standardized Code Quality Assurance Tool (v0.1) ]
-DD/MM/YYYY HH:MM:SS - Starting analysis
-
-Gathering files to analyze... 2 file(s)
- - src/Testing.php
- - src/Purpose.php
-
-Running analyzers for language Meta
-
-[Meta > Composer] Checking Composer configuration... Useless, no change
-
-Running analyzers for language PHP
-
-[PHP > Lint] Checking syntax...
- - src/Testing.php OK
- - src/Purpose.php OK
-
-[PHP > PhpCs] PSR-2 Standard checking through phpcs...
- - src/Testing.php OK
- - src/Purpose.php OK
-
-[PHP > PhpCsFixer] PSR-2 Standard checking through php-cs-fixer...
- - src/Testing.php OK
- - src/Purpose.php OK
-
-[PHP > PhpMd] PHP Mess Detector analysis...
- - src/Testing.php OK
- - src/Purpose.php OK
-
-Each configured quality test was green
-
-DD/MM/YYYY HH:MM:SS - Analysed in X.Ys
-[ SCQAT - Standardized Code Quality Assurance Tool (v0.1) ]
-```

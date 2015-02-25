@@ -23,7 +23,7 @@ class PhpCsFixer extends \SCQAT\AnalyzerAbstract
     {
         $result = new \SCQAT\Result();
 
-        $processBuilder = new ProcessBuilder(array("php",  $context->rootDirectory."vendor/bin/php-cs-fixer", "--level=psr2", "--dry-run", "--verbose", "fix", $analyzedFileName));
+        $processBuilder = new ProcessBuilder(array("php",  $context->vendorDirectory."bin/php-cs-fixer", "--level=psr2", "--dry-run", "--verbose", "fix", $analyzedFileName));
         $process = $processBuilder->getProcess();
         $process->run();
 
