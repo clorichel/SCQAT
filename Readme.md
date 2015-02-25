@@ -19,7 +19,7 @@ We will assume that you will run `composer.phar` locally on a new empty director
 ### Install SCQAT
 
 ```
-php composer.phar require clorichel/scqat:0.1
+php composer.phar require clorichel/scqat:0.2
 ```
 
 Thanks to each Composer contributor, yes, that was it.
