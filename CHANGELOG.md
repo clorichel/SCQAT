@@ -1,3 +1,15 @@
+## v0.4 (work in progress)
+
+Features :
+
+ - added `--file` CLI option with `-f` shortcut
+
+Documentation :
+
+ - added new `-f` option to the CLI manual
+ - corrected compared version to HEAD in doc and CLI error returned
+ - added SensioLabsInsight medal widget
+
 ## v0.3 (2015-02-26)
 
 Features :

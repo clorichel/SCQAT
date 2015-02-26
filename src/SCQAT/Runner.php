@@ -62,7 +62,6 @@ class Runner
      */
     private function gatherLanguages()
     {
-        // TODO this is fun but not that smart...
         $folder = dirname(__FILE__).DIRECTORY_SEPARATOR."Language";
         if (file_exists($folder)) {
             $finder = new \Symfony\Component\Finder\Finder();
@@ -144,8 +143,6 @@ class Runner
                     }
                     $result->languageName = $languageName;
                     $result->analyzerName = $analyzerName;
-                    // TODO filename not set = all files used
-                    //$result->fileName = $fileName;
                     $context->report->analyzerResult($result);
                 } else {
                     foreach ($this->context->files as $fileName) {

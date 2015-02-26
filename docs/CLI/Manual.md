@@ -7,7 +7,8 @@ scqat - Run a set of industry standard code quality analyzers on your source cod
 ### Synopsys
 
 ```
-'scqat' [-d|--directory="..."] (--[modified|pre-commit])
+'scqat' [ [-f|--file="<file>"] | [-d|--directory="<directory>"] ]
+        [--modified] [--pre-commit]
 ```
 
 ### Description
@@ -18,6 +19,11 @@ Default to "all files" (through a `git ls-files`). One of the options below may 
 
 ### Options
 
+`-f <path/to/file>`
+`--file=<path/to/file>`
+
+Provide the file you want to analyze. You can use multiple `-f` options, each file will be analyzed
+
 `-d <path/to/directory>`
 `--directory=<path/to/directory>`
 
@@ -25,11 +31,11 @@ Provide the directory you want to analyze (defaults to current directory if none
 
 `--modified`
 
-Analyze all modified files in the repository (staged, unstaged and untracked files changed from local revision to 'refs/remotes/origin/master' revision)
+Analyze all modified files in the repository (staged, unstaged and untracked files changed from local revision to HEAD revision)
 
 `--pre-commit`
 
-Analyze all staged files changed from local revision to 'refs/remotes/origin/master' revision
+Analyze all staged files changed from local revision to HEAD revision
 
 ### Output
 

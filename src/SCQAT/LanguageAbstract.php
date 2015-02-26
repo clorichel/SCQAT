@@ -20,7 +20,6 @@ abstract class LanguageAbstract
      */
     public static function getAnalyzersNames()
     {
-        // TODO this is funny and works but not that smart... change that
         // Scanning each "languagename"/Analyzers subdirectory
         $folder = dirname(__FILE__).str_replace("\\", DIRECTORY_SEPARATOR, ltrim(get_called_class(), "SCQAT")).DIRECTORY_SEPARATOR."Analyzer";
         $analyzersNames = array();

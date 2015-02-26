@@ -234,13 +234,20 @@ class CLI extends \Symfony\Component\Console\Application
     private function gatherFiles()
     {
         $definition = new InputDefinition(array(
+            new InputOption("file", "f", InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED),
             new InputOption("directory", "d", InputOption::VALUE_REQUIRED),
             new InputOption("modified", null, InputOption::VALUE_NONE),
             new InputOption("pre-commit", null, InputOption::VALUE_NONE),
         ));
-        // TODO $definition->getSynopsis should be (--[modified|pre-commit])
-
+        
         $this->input->bind($definition);
+
+        $files = $this->input->getOption("file");
+        if (!empty($files)) {
+            $this->files = $files;
+            return true;
+        }
+
         $analyzedDirectory = "";
         if (!empty($this->input->getOption("directory"))) {
             $analyzedDirectory = rtrim($this->input->getOption("directory"), "/")."/";
@@ -278,19 +285,17 @@ class CLI extends \Symfony\Component\Console\Application
      */
     private function gatherFilesModified()
     {
-        // Verifying that refs/remote/origin/master reference exists in current git repository
-        //$revParse = new Process($this->getCdToAnalyzedDir()."git rev-parse --verify 'refs/remotes/origin/master' 2> /dev/null");
+        // Verifying that HEAD reference exists in current git repository
         $revParse = new Process($this->getCdToAnalyzedDir()."git rev-parse --verify HEAD 2> /dev/null");
         $revParse->run();
 
         if (!$revParse->isSuccessful()) {
-            $this->output->writeln("<error>'refs/remotes/origin/master' reference does not exists in current folder. Is it really a git repository ? Is its remote origin correctly configured ?</error>");
+            $this->output->writeln("<error>HEAD reference does not exists in current folder. Is it really a git repository ? Have you ever committed in it ?</error>");
 
             return false;
         }
 
-        // Listing staged, unstaged and untracked files changed from local revision to 'refs/remotes/origin/master' revision
-        //$process = new Process($this->getCdToAnalyzedDir()."git diff-index --name-status 'refs/remotes/origin/master' | egrep '^(A|M)' | awk '{print $2;}' && git ls-files --others --exclude-standard");
+        // Listing staged, unstaged and untracked files changed from local revision to HEAD revision
         $process = new Process($this->getCdToAnalyzedDir()."git diff-index --name-status HEAD | egrep '^(A|M)' | awk '{print $2;}' && git ls-files --others --exclude-standard");
         $process->run();
 
@@ -311,18 +316,18 @@ class CLI extends \Symfony\Component\Console\Application
      */
     private function gatherFilesPreCommit()
     {
-        // Verifying that refs/remote/origin/master reference exists in current git repository
-        $revParse = new Process($this->getCdToAnalyzedDir()."git rev-parse --verify 'refs/remotes/origin/master' 2> /dev/null");
+        // Verifying that HEAD reference exists in current git repository
+        $revParse = new Process($this->getCdToAnalyzedDir()."git rev-parse --verify HEAD 2> /dev/null");
         $revParse->run();
 
         if (!$revParse->isSuccessful()) {
-            $this->output->writeln("<error>'refs/remotes/origin/master' reference does not exists in current folder. Is it really a git repository ? Is its remote origin correctly configured ?</error>");
+            $this->output->writeln("<error>HEAD reference does not exists in current folder. Is it really a git repository ? Is its remote origin correctly configured ?</error>");
 
             return false;
         }
 
-        // Listing staged files changed from local revision to 'refs/remotes/origin/master' revision
-        $process = new Process($this->getCdToAnalyzedDir()."git diff-index --cached --name-status 'refs/remotes/origin/master' | egrep '^(A|M)' | awk '{print $2;}'");
+        // Listing staged files changed from local revision to HEAD revision
+        $process = new Process($this->getCdToAnalyzedDir()."git diff-index --cached --name-status HEAD | egrep '^(A|M)' | awk '{print $2;}'");
         $process->run();
 
         if (!$process->isSuccessful()) {

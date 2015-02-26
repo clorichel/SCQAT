@@ -1,4 +1,4 @@
-[![Version](http://img.shields.io/packagist/v/clorichel/scqat.svg?style=flat-square)](https://packagist.org/packages/clorichel/scqat) [![License](http://img.shields.io/packagist/l/clorichel/scqat.svg?style=flat-square)](https://github.com/clorichel/scqat/blob/master/LICENSE) [![Downloads](http://img.shields.io/packagist/dt/clorichel/scqat.svg?style=flat-square)](https://packagist.org/packages/clorichel/scqat)
+[![Version](http://img.shields.io/packagist/v/clorichel/scqat.svg?style=flat-square)](https://packagist.org/packages/clorichel/scqat) [![License](http://img.shields.io/packagist/l/clorichel/scqat.svg?style=flat-square)](https://github.com/clorichel/scqat/blob/master/LICENSE) [![Downloads](http://img.shields.io/packagist/dt/clorichel/scqat.svg?style=flat-square)](https://packagist.org/packages/clorichel/scqat) [![SensioLabsInsight](https://insight.sensiolabs.com/projects/f5334e68-4553-478f-b83f-add159623d9d/mini.png)](https://insight.sensiolabs.com/projects/f5334e68-4553-478f-b83f-add159623d9d)
 
 # SCQAT
 

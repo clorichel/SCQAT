@@ -40,7 +40,6 @@ class PhpDoc extends \SCQAT\AnalyzerAbstract
             $simpleXml = new \SimpleXMLElement($xmlContent);
             $errorString = "";
             foreach ($simpleXml->file[0]->parse_markers->error as $error) {
-                // TODO make "ignoring" configurable
                 // Ignoring "no file summary"
                 if ($error != "No summary was found for this file") {
                     // Extracting final "filename.php" from $analyzedFilename
