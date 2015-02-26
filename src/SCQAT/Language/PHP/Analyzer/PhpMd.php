@@ -23,7 +23,7 @@ class PhpMd extends \SCQAT\AnalyzerAbstract
     {
         $result = new \SCQAT\Result();
 
-        $processBuilder = new ProcessBuilder(array('php', $context->vendorDirectory.'bin/phpmd', $analyzedFileName, "text", "design,codesize,unusedcode,naming"));
+        $processBuilder = new ProcessBuilder(array("php", $context->vendorDirectory."bin/phpmd", $analyzedFileName, "text", "design,codesize,unusedcode,naming"));
         $process = $processBuilder->getProcess();
         $process->run();
 

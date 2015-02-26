@@ -23,7 +23,7 @@ class PhpCs extends \SCQAT\AnalyzerAbstract
     {
         $result = new \SCQAT\Result();
 
-        $processBuilder = new ProcessBuilder(array('php', $context->vendorDirectory.'bin/phpcs', '--standard=PSR2', '-n', $analyzedFileName));
+        $processBuilder = new ProcessBuilder(array("php", $context->vendorDirectory."bin/phpcs", "--standard=PSR2", "-n", $analyzedFileName));
         $process = $processBuilder->getProcess();
         $process->run();
 

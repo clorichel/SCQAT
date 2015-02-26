@@ -25,7 +25,7 @@ class Lint extends \SCQAT\AnalyzerAbstract
 
         unset($context->willNeverExistFakeVar); // This is for PHPMD "unused" alert
 
-        $processBuilder = new ProcessBuilder(array('php', '-l', $analyzedFileName));
+        $processBuilder = new ProcessBuilder(array("php", "-l", $analyzedFileName));
         $process = $processBuilder->getProcess();
         $process->run();
 
