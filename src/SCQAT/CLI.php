@@ -25,7 +25,7 @@ class CLI extends \Symfony\Component\Console\Application
      * CLI Application version
      * @var string
      */
-    private $version = "0.2";
+    private $version = "0.3";
 
     /**
      * SCQAT vendor directory
@@ -64,24 +64,21 @@ class CLI extends \Symfony\Component\Console\Application
     private $files = array();
 
     /**
-     * The timezone to apply
-     * @var string
-     */
-    private $timezone = "Europe/Paris";
-
-    /**
      * The long date format (as expected by PHP date function)
      * @var string
      */
-    private $dateFormatLong = "d/m/Y H:i:s";
+    private $dateFormatLong = "Y-m-d H:i:s";
 
     /**
      * Initializing and building parent symfony/console application
+     * @param string $vendorDirectory Full path to SCQAT vendor directory
      */
     public function __construct($vendorDirectory)
     {
         $this->runner = new \SCQAT\Runner();
-        date_default_timezone_set($this->timezone);
+        if (!ini_get('date.timezone') && !date_default_timezone_get()) {
+            date_default_timezone_set('UTC');
+        }
         parent::__construct($this->name, $this->version);
         $this->vendorDirectory = $vendorDirectory;
     }
@@ -202,6 +199,10 @@ class CLI extends \Symfony\Component\Console\Application
         });
     }
 
+    /**
+     * Given a list of files separated by "\n", assign them to $this->files array
+     * @param string $filesList List of files separated by "\n"
+     */
     private function explodeFilesList($filesList)
     {
         $exploded = explode("\n", $filesList);
@@ -212,6 +213,10 @@ class CLI extends \Symfony\Component\Console\Application
         }
     }
 
+    /**
+     * Get the "cd $this->analyedDirectory && " command prefix if needed
+     * @return string The "cd" to analyzed dir command
+     */
     private function getCdToAnalyzedDir()
     {
         $cdToAnalyzedDir = "";
@@ -267,10 +272,15 @@ class CLI extends \Symfony\Component\Console\Application
         return true;
     }
 
+    /**
+     * Gathering modified files (staged, unstaged and untracked)
+     * @return boolean True if gathering went well, false on any problem
+     */
     private function gatherFilesModified()
     {
         // Verifying that refs/remote/origin/master reference exists in current git repository
-        $revParse = new Process($this->getCdToAnalyzedDir()."git rev-parse --verify 'refs/remotes/origin/master' 2> /dev/null");
+        //$revParse = new Process($this->getCdToAnalyzedDir()."git rev-parse --verify 'refs/remotes/origin/master' 2> /dev/null");
+        $revParse = new Process($this->getCdToAnalyzedDir()."git rev-parse --verify HEAD 2> /dev/null");
         $revParse->run();
 
         if (!$revParse->isSuccessful()) {
@@ -280,7 +290,8 @@ class CLI extends \Symfony\Component\Console\Application
         }
 
         // Listing staged, unstaged and untracked files changed from local revision to 'refs/remotes/origin/master' revision
-        $process = new Process($this->getCdToAnalyzedDir()."git diff-index --name-status 'refs/remotes/origin/master' | egrep '^(A|M)' | awk '{print $2;}' && git ls-files --others --exclude-standard");
+        //$process = new Process($this->getCdToAnalyzedDir()."git diff-index --name-status 'refs/remotes/origin/master' | egrep '^(A|M)' | awk '{print $2;}' && git ls-files --others --exclude-standard");
+        $process = new Process($this->getCdToAnalyzedDir()."git diff-index --name-status HEAD | egrep '^(A|M)' | awk '{print $2;}' && git ls-files --others --exclude-standard");
         $process->run();
 
         if (!$process->isSuccessful()) {
@@ -294,6 +305,10 @@ class CLI extends \Symfony\Component\Console\Application
         return true;
     }
 
+    /**
+     * Gathering staged files only
+     * @return boolean True if gathering went well, false on any problem
+     */
     private function gatherFilesPreCommit()
     {
         // Verifying that refs/remote/origin/master reference exists in current git repository

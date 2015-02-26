@@ -1,12 +1,17 @@
-## v0.3 (work in progress)
+## v0.3 (2015-02-26)
 
 Features :
 
- - 
+ - added phpDocumentor support
+   - ignoring file summary
+   - ignoring any error on methods which docblock contains "{@inheritdoc}"
+ - detecting timezone and defaults to UTC
+ - standardized dateFormatLong
+ - handling wrong result from languages analyzers with appropriate message
 
 Bugfixes :
 
- - correctly handling "no files to analyze"
+ - correctly handling "no files to analyze" case
 
 Documentation :
 

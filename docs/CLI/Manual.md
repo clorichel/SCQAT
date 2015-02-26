@@ -33,13 +33,35 @@ Analyze all staged files changed from local revision to 'refs/remotes/origin/mas
 
 ### Output
 
-```
-[ SCQAT - Standardized Code Quality Assurance Tool (v0.1) ]
-DD/MM/YYYY HH:MM:SS - Starting analysis
+This is a sample `scqat` output when executed on its own source code.
 
-Gathering files to analyze... 2 file(s)
- - src/Testing.php
- - src/Purpose.php
+```
+[ SCQAT - Standardized Code Quality Assurance Tool (v0.3) ]
+2015-02-26 09:35:24 - Starting analysis
+
+Gathering files to analyze... 22 file(s)
+ - .gitignore
+ - CHANGELOG.md
+ - LICENSE
+ - Readme.md
+ - bin/scqat
+ - composer.json
+ - docs/CLI/Manual.md
+ - src/SCQAT/AnalyzerAbstract.php
+ - src/SCQAT/CLI.php
+ - src/SCQAT/Context.php
+ - src/SCQAT/Language/Meta.php
+ - src/SCQAT/Language/Meta/Analyzer/Composer.php
+ - src/SCQAT/Language/PHP.php
+ - src/SCQAT/Language/PHP/Analyzer/Lint.php
+ - src/SCQAT/Language/PHP/Analyzer/PhpCs.php
+ - src/SCQAT/Language/PHP/Analyzer/PhpCsFixer.php
+ - src/SCQAT/Language/PHP/Analyzer/PhpDoc.php
+ - src/SCQAT/Language/PHP/Analyzer/PhpMd.php
+ - src/SCQAT/LanguageAbstract.php
+ - src/SCQAT/Report.php
+ - src/SCQAT/Result.php
+ - src/SCQAT/Runner.php
 
 Running analyzers for language Meta
 
@@ -48,23 +70,92 @@ Running analyzers for language Meta
 Running analyzers for language PHP
 
 [PHP > Lint] Checking syntax...
- - src/Testing.php OK
- - src/Purpose.php OK
+ - src/SCQAT/AnalyzerAbstract.php OK
+ - src/SCQAT/CLI.php OK
+ - src/SCQAT/Context.php OK
+ - src/SCQAT/Language/Meta.php OK
+ - src/SCQAT/Language/Meta/Analyzer/Composer.php OK
+ - src/SCQAT/Language/PHP.php OK
+ - src/SCQAT/Language/PHP/Analyzer/Lint.php OK
+ - src/SCQAT/Language/PHP/Analyzer/PhpCs.php OK
+ - src/SCQAT/Language/PHP/Analyzer/PhpCsFixer.php OK
+ - src/SCQAT/Language/PHP/Analyzer/PhpDoc.php OK
+ - src/SCQAT/Language/PHP/Analyzer/PhpMd.php OK
+ - src/SCQAT/LanguageAbstract.php OK
+ - src/SCQAT/Report.php OK
+ - src/SCQAT/Result.php OK
+ - src/SCQAT/Runner.php OK
 
 [PHP > PhpCs] PSR-2 Standard checking through phpcs...
- - src/Testing.php OK
- - src/Purpose.php OK
+ - src/SCQAT/AnalyzerAbstract.php OK
+ - src/SCQAT/CLI.php OK
+ - src/SCQAT/Context.php OK
+ - src/SCQAT/Language/Meta.php OK
+ - src/SCQAT/Language/Meta/Analyzer/Composer.php OK
+ - src/SCQAT/Language/PHP.php OK
+ - src/SCQAT/Language/PHP/Analyzer/Lint.php OK
+ - src/SCQAT/Language/PHP/Analyzer/PhpCs.php OK
+ - src/SCQAT/Language/PHP/Analyzer/PhpCsFixer.php OK
+ - src/SCQAT/Language/PHP/Analyzer/PhpDoc.php OK
+ - src/SCQAT/Language/PHP/Analyzer/PhpMd.php OK
+ - src/SCQAT/LanguageAbstract.php OK
+ - src/SCQAT/Report.php OK
+ - src/SCQAT/Result.php OK
+ - src/SCQAT/Runner.php OK
 
 [PHP > PhpCsFixer] PSR-2 Standard checking through php-cs-fixer...
- - src/Testing.php OK
- - src/Purpose.php OK
+ - src/SCQAT/AnalyzerAbstract.php OK
+ - src/SCQAT/CLI.php OK
+ - src/SCQAT/Context.php OK
+ - src/SCQAT/Language/Meta.php OK
+ - src/SCQAT/Language/Meta/Analyzer/Composer.php OK
+ - src/SCQAT/Language/PHP.php OK
+ - src/SCQAT/Language/PHP/Analyzer/Lint.php OK
+ - src/SCQAT/Language/PHP/Analyzer/PhpCs.php OK
+ - src/SCQAT/Language/PHP/Analyzer/PhpCsFixer.php OK
+ - src/SCQAT/Language/PHP/Analyzer/PhpDoc.php OK
+ - src/SCQAT/Language/PHP/Analyzer/PhpMd.php OK
+ - src/SCQAT/LanguageAbstract.php OK
+ - src/SCQAT/Report.php OK
+ - src/SCQAT/Result.php OK
+ - src/SCQAT/Runner.php OK
+
+[PHP > PhpDoc] Checking for documentation completeness...
+ - src/SCQAT/AnalyzerAbstract.php OK
+ - src/SCQAT/CLI.php OK
+ - src/SCQAT/Context.php OK
+ - src/SCQAT/Language/Meta.php OK
+ - src/SCQAT/Language/Meta/Analyzer/Composer.php OK
+ - src/SCQAT/Language/PHP.php OK
+ - src/SCQAT/Language/PHP/Analyzer/Lint.php OK
+ - src/SCQAT/Language/PHP/Analyzer/PhpCs.php OK
+ - src/SCQAT/Language/PHP/Analyzer/PhpCsFixer.php OK
+ - src/SCQAT/Language/PHP/Analyzer/PhpDoc.php OK
+ - src/SCQAT/Language/PHP/Analyzer/PhpMd.php OK
+ - src/SCQAT/LanguageAbstract.php OK
+ - src/SCQAT/Report.php OK
+ - src/SCQAT/Result.php OK
+ - src/SCQAT/Runner.php OK
 
 [PHP > PhpMd] PHP Mess Detector analysis...
- - src/Testing.php OK
- - src/Purpose.php OK
+ - src/SCQAT/AnalyzerAbstract.php OK
+ - src/SCQAT/CLI.php OK
+ - src/SCQAT/Context.php OK
+ - src/SCQAT/Language/Meta.php OK
+ - src/SCQAT/Language/Meta/Analyzer/Composer.php OK
+ - src/SCQAT/Language/PHP.php OK
+ - src/SCQAT/Language/PHP/Analyzer/Lint.php OK
+ - src/SCQAT/Language/PHP/Analyzer/PhpCs.php OK
+ - src/SCQAT/Language/PHP/Analyzer/PhpCsFixer.php OK
+ - src/SCQAT/Language/PHP/Analyzer/PhpDoc.php OK
+ - src/SCQAT/Language/PHP/Analyzer/PhpMd.php OK
+ - src/SCQAT/LanguageAbstract.php OK
+ - src/SCQAT/Report.php OK
+ - src/SCQAT/Result.php OK
+ - src/SCQAT/Runner.php OK
 
 Each configured quality test was green
 
-DD/MM/YYYY HH:MM:SS - Analysed in X.Ys
-[ SCQAT - Standardized Code Quality Assurance Tool (v0.1) ]
+2015-02-26 09:35:35 - Analysed in 11.098614931107s
+[ SCQAT - Standardized Code Quality Assurance Tool (v0.3) ]
 ```

@@ -100,6 +100,7 @@ class Runner
     /**
      * Getting a language analyzer class instance, ensuring one instance per analyzer
      * @param  string                  $analyzerName The wanted analyzer name
+     * @param  string                  $languageName The wanted analyzer language name
      * @return \SCQAT\LanguageAbstract The language class instance
      */
     private function getAnalyzerClass($analyzerName, $languageName)
@@ -135,6 +136,12 @@ class Runner
                 if (!empty($analyzerClass->needAllFiles) && $analyzerClass->needAllFiles === true) {
                     $context->report->analyzerRun("", $analyzerName, $languageName, $analyzerClass);
                     $result = $analyzerClass->analyze($context);
+                    if (!$result instanceof \SCQAT\Result) {
+                        $result = new \SCQAT\Result();
+                        $result->isSuccess = false;
+                        $result->value = "Wrong result !";
+                        $result->description = "The analyzer did not returned a \\SCQAT\\Result instance";
+                    }
                     $result->languageName = $languageName;
                     $result->analyzerName = $analyzerName;
                     // TODO filename not set = all files used
@@ -147,6 +154,12 @@ class Runner
                         }
                         $context->report->analyzerRun($fileName, $analyzerName, $languageName, $analyzerClass);
                         $result = $analyzerClass->analyze($context, $fileName);
+                        if (!$result instanceof \SCQAT\Result) {
+                            $result = new \SCQAT\Result();
+                            $result->isSuccess = false;
+                            $result->value = "Wrong result !";
+                            $result->description = "The analyzer did not returned a \\SCQAT\\Result instance";
+                        }
                         $result->languageName = $languageName;
                         $result->analyzerName = $analyzerName;
                         $result->fileName = $fileName;

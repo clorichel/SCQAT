@@ -19,7 +19,7 @@ We will assume that you will run `composer.phar` locally placed in a newly creat
 ### Install SCQAT
 
 ```
-php composer.phar require clorichel/scqat:0.2
+php composer.phar require clorichel/scqat:0.3
 ```
 
 Thanks to each Composer contributor, yes, that was it.
@@ -73,7 +73,7 @@ See `\SCQAT\Language\PHP` and `\SCQAT\Language\PHP\Analyzer\Lint` for concrete e
 
 For instance SCQAT does exactly what it says : it's an efficient tool to standardize code quality assurance. You can run it on many platforms. It installs in no time. Reports are clear and clean. One can use it on a git pre-commit hook or add it on a continuous integration stack. Little PHP development skills are required to implement new languages and analyzers.
 
-Short term work is to add support for PHPUnit and phpDocumentor, improve documentation and/or install process for system wide installation, adding `.scqat` configuration file support with "exclude analyzer" functionnality, ~~add a cli parameter to indicate which folder to analyze (to avoid the need to "be" in that directory)~~ *(done)*, add support for non git folders to analyze.
+Short term work is to add support for PHPUnit and ~~phpDocumentor~~ *(done)*, ~~improve documentation and/or install process for system wide installation~~ *(done)*, adding `.scqat` configuration file support with "exclude analyzer" functionnality, ~~add a cli parameter to indicate which folder to analyze (to avoid the need to "be" in that directory)~~ *(done)*, add support for non git folders to analyze.
 
 Mid to long term will be working on reports to be able to export them in some usual formats (TXT, and HTML), rating and ranking with badges, and any other need that could appear.
 

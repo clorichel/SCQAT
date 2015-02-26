@@ -45,6 +45,8 @@ class Context
 
     /**
      * Initialize SCQAT Context
+     * @param string $vendorDirectory   Full path to SCQAT vendor directory
+     * @param string $analyzedDirectory The directory selected for analysis
      */
     public function __construct($vendorDirectory, $analyzedDirectory)
     {

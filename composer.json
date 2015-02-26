@@ -15,9 +15,11 @@
         "symfony/process": "2.6.4",
         "symfony/console": "2.6.4",
         "symfony/finder": "2.6.4",
+        "symfony/filesystem": "2.6.4",
         "phpmd/phpmd": "2.2.0",
         "squizlabs/php_codesniffer": "2.2.0",
-        "fabpot/php-cs-fixer": "1.5"
+        "fabpot/php-cs-fixer": "1.5",
+        "phpdocumentor/phpdocumentor": "2.8.2"
     },
     "autoload" : {
         "psr-4" : {
