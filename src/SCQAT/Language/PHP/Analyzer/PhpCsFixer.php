@@ -30,7 +30,16 @@ class PhpCsFixer extends \SCQAT\AnalyzerAbstract
         if (!$process->isSuccessful()) {
             $result->isSuccess = false;
             $result->value = "KO";
-            $result->description = trim($process->getOutput());
+            $description = "";
+            $outputLines = explode("\n", trim($process->getOutput()));
+            foreach ($outputLines as $line) {
+                // remove all output useless lines
+                if (strpos($line, $analyzedFileName) !== false) {
+                    // remove filename and useles chars to just keep fixers violated
+                    $description = trim(substr($line, (strpos($line, $analyzedFileName) + strlen($analyzedFileName))), " ()");
+                }
+            }
+            $result->description = "Triggered fixers : ".$description;
         } else {
             $result->isSuccess = true;
             $result->value = "OK";

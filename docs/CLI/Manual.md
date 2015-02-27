@@ -7,7 +7,7 @@ scqat - Run a set of industry standard code quality analyzers on your source cod
 ### Synopsys
 
 ```
-'scqat' [ [-f|--file="<file>"] | [-d|--directory="<directory>"] ]
+scqat [ [-f|--file="<file>"] | [-d|--directory="<directory>"] ]
         [--modified] [--pre-commit]
 ```
 

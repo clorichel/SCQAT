@@ -10,6 +10,8 @@ Features :
 
  - added `--file` CLI option with `-f` shortcut
  - introduced self-managed file gatherer
+ - improved [PHP > PhpCsFixer] result description
+ - improved [PHP > PHPCs] result description
 
 Bugfixes :
 
