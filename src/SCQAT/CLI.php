@@ -6,7 +6,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\Process;
 
 /**
  * SCQAT command line application to be ->run()
@@ -25,7 +24,7 @@ class CLI extends \Symfony\Component\Console\Application
      * CLI Application version
      * @var string
      */
-    private $version = "0.3";
+    private $version = "0.4";
 
     /**
      * SCQAT vendor directory
@@ -165,7 +164,7 @@ class CLI extends \Symfony\Component\Console\Application
             $output->writeln("<info>Running analyzers for language</info> <comment>".$languageName."</comment>");
         });
 
-        $context->report->addHook("Analyzer_First_Use", function ($analyzerName, $languageName, $analyzerInstance) use ($output) {
+        $context->report->addHook("Analyzer_First_Use", function ($analyzerName, $languageName, \SCQAT\AnalyzerAbstract $analyzerInstance) use ($output) {
             $output->writeln("");
             $message = "<info>[".$languageName." > ".$analyzerName."] ".$analyzerInstance::$introductionMessage."...</info>";
             if (!empty($analyzerInstance->needAllFiles) && $analyzerInstance->needAllFiles === true) {
@@ -200,35 +199,7 @@ class CLI extends \Symfony\Component\Console\Application
     }
 
     /**
-     * Given a list of files separated by "\n", assign them to $this->files array
-     * @param string $filesList List of files separated by "\n"
-     */
-    private function explodeFilesList($filesList)
-    {
-        $exploded = explode("\n", $filesList);
-        foreach ($exploded as $relativeFileName) {
-            if (!empty($relativeFileName)) {
-                $this->files[] = $this->analyzedDirectory.$relativeFileName;
-            }
-        }
-    }
-
-    /**
-     * Get the "cd $this->analyedDirectory && " command prefix if needed
-     * @return string The "cd" to analyzed dir command
-     */
-    private function getCdToAnalyzedDir()
-    {
-        $cdToAnalyzedDir = "";
-        if (!empty($this->analyzedDirectory)) {
-            $cdToAnalyzedDir = "cd ".$this->analyzedDirectory." && ";
-        }
-
-        return $cdToAnalyzedDir;
-    }
-
-    /**
-     * Gathering files
+     * Gathering files depending of CLI option passed
      * @return boolean True if gathering went well, false on any problem
      */
     private function gatherFiles()
@@ -239,12 +210,13 @@ class CLI extends \Symfony\Component\Console\Application
             new InputOption("modified", null, InputOption::VALUE_NONE),
             new InputOption("pre-commit", null, InputOption::VALUE_NONE),
         ));
-        
+
         $this->input->bind($definition);
 
         $files = $this->input->getOption("file");
         if (!empty($files)) {
             $this->files = $files;
+
             return true;
         }
 
@@ -254,89 +226,18 @@ class CLI extends \Symfony\Component\Console\Application
         }
         $this->analyzedDirectory = realpath($analyzedDirectory).DIRECTORY_SEPARATOR;
 
-        // User wants to analyze all modified files (staged, unstaged and untracked)
+        $fileGatherer = new \SCQAT\FileGatherer($this->analyzedDirectory);
+
         if ($this->input->getOption("modified") === true) {
-            return $this->gatherFilesModified();
+            // User wants to analyze all modified files (staged, unstaged and untracked)
+            $this->files = $fileGatherer->gitModified();
+        } elseif ($this->input->getOption("pre-commit") === true) {
+            // User wants to analyze all staged files (before commit)
+            $this->files = $this->gatherFilesPreCommit();
+        } else {
+            // Default action, user wants to analyze all files in the git repository
+            $this->files = $fileGatherer->gitAll();
         }
-
-        // User wants to analyze all staged files (before commit)
-        if ($this->input->getOption("pre-commit") === true) {
-            return $this->gatherFilesPreCommit();
-        }
-
-        // Default action, user wants to analyze all files in the git repository
-        $process = new Process($this->getCdToAnalyzedDir()."git ls-files");
-        $process->run();
-
-        if (!$process->isSuccessful()) {
-            $this->output->writeln("<error>Unable to 'git ls-files'. Is current folder a git repository ? Have you staged the files you want to analyze ?</error>");
-
-            return false;
-        }
-
-        $this->explodeFilesList(trim($process->getOutput()));
-
-        return true;
-    }
-
-    /**
-     * Gathering modified files (staged, unstaged and untracked)
-     * @return boolean True if gathering went well, false on any problem
-     */
-    private function gatherFilesModified()
-    {
-        // Verifying that HEAD reference exists in current git repository
-        $revParse = new Process($this->getCdToAnalyzedDir()."git rev-parse --verify HEAD 2> /dev/null");
-        $revParse->run();
-
-        if (!$revParse->isSuccessful()) {
-            $this->output->writeln("<error>HEAD reference does not exists in current folder. Is it really a git repository ? Have you ever committed in it ?</error>");
-
-            return false;
-        }
-
-        // Listing staged, unstaged and untracked files changed from local revision to HEAD revision
-        $process = new Process($this->getCdToAnalyzedDir()."git diff-index --name-status HEAD | egrep '^(A|M)' | awk '{print $2;}' && git ls-files --others --exclude-standard");
-        $process->run();
-
-        if (!$process->isSuccessful()) {
-            $this->output->writeln("<error>Unable to get modified files. What's going on ?</error>");
-
-            return false;
-        }
-
-        $this->explodeFilesList(trim($process->getOutput()));
-
-        return true;
-    }
-
-    /**
-     * Gathering staged files only
-     * @return boolean True if gathering went well, false on any problem
-     */
-    private function gatherFilesPreCommit()
-    {
-        // Verifying that HEAD reference exists in current git repository
-        $revParse = new Process($this->getCdToAnalyzedDir()."git rev-parse --verify HEAD 2> /dev/null");
-        $revParse->run();
-
-        if (!$revParse->isSuccessful()) {
-            $this->output->writeln("<error>HEAD reference does not exists in current folder. Is it really a git repository ? Is its remote origin correctly configured ?</error>");
-
-            return false;
-        }
-
-        // Listing staged files changed from local revision to HEAD revision
-        $process = new Process($this->getCdToAnalyzedDir()."git diff-index --cached --name-status HEAD | egrep '^(A|M)' | awk '{print $2;}'");
-        $process->run();
-
-        if (!$process->isSuccessful()) {
-            $this->output->writeln("<error>Unable to get staged files</error>");
-
-            return false;
-        }
-
-        $this->explodeFilesList(trim($process->getOutput()));
 
         return true;
     }

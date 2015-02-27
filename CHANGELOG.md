@@ -1,8 +1,19 @@
 ## v0.4 (work in progress)
 
+TODO :
+
+ - reduce \SCQAT\CLI coupling
+ - add support for non git folders to analyze
+   - default method (no option) should try `git ls-files` first, before simply listing files if not a git repository
+
 Features :
 
  - added `--file` CLI option with `-f` shortcut
+ - introduced self-managed file gatherer
+
+Bugfixes :
+
+ - fixed all SensioLabsInsight violations for analyse #1
 
 Documentation :
 
