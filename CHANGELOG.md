@@ -16,6 +16,7 @@ Features :
 Bugfixes :
 
  - fixed all SensioLabsInsight violations for analyse #1
+ - ensured runner languages and analyzers classes
 
 Documentation :
 

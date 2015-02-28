@@ -2,6 +2,8 @@
 
 namespace SCQAT;
 
+use Symfony\Component\Finder\Finder;
+
 /**
  * This is SCQAT Runner which actually does the analyzes
  */
@@ -64,7 +66,7 @@ class Runner
     {
         $folder = dirname(__FILE__).DIRECTORY_SEPARATOR."Language";
         if (file_exists($folder)) {
-            $finder = new \Symfony\Component\Finder\Finder();
+            $finder = new Finder();
             $finder->directories()->in($folder)->depth("== 0");
             if (count($finder) > 0) {
                 foreach ($finder as $directory) {
@@ -82,14 +84,13 @@ class Runner
      */
     private function getLanguageClass($languageName)
     {
-        // Do not handle unknown language !
-        if (! in_array($languageName, $this->languagesNames)) {
-            return false;
-        }
-
         // Make a new instance if not already made
         if (empty($this->languagesInstances[$languageName])) {
             $className = "\\SCQAT\\Language\\".$languageName;
+            // Do ensure $className is a language class
+            if (!is_subclass_of($className, '\\SCQAT\\LanguageAbstract')) {
+                return false;
+            }
             $this->languagesInstances[$languageName] = new $className();
         }
 
@@ -104,14 +105,13 @@ class Runner
      */
     private function getAnalyzerClass($analyzerName, $languageName)
     {
-        // Do not handle unknown analyzers !
-        if (! in_array($analyzerName, $this->analyzersNames[$languageName])) {
-            return false;
-        }
-
         // Make a new instance if not already made
         if (empty($this->analyzersInstances[$languageName][$analyzerName])) {
             $className = "\\SCQAT\\Language\\".$languageName."\\Analyzer\\".$analyzerName;
+            // Do ensure $className is an analyzer class
+            if (!is_subclass_of($className, '\\SCQAT\\AnalyzerAbstract')) {
+                return false;
+            }
             $this->analyzersInstances[$languageName][$analyzerName] = new $className();
         }
 
