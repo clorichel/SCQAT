@@ -11,7 +11,8 @@ Features :
  - added `--file` CLI option with `-f` shortcut
  - introduced self-managed file gatherer
  - improved [PHP > PhpCsFixer] result description
- - improved [PHP > PHPCs] result description
+ - improved [PHP > PhpCs] result description
+ - added [PHP > PhpCpd] copy/paste detector (file by file)
 
 Bugfixes :
 

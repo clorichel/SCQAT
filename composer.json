@@ -19,7 +19,8 @@
         "phpmd/phpmd": "2.2.0",
         "squizlabs/php_codesniffer": "2.2.0",
         "fabpot/php-cs-fixer": "1.5",
-        "phpdocumentor/phpdocumentor": "2.8.2"
+        "phpdocumentor/phpdocumentor": "2.8.2",
+        "sebastian/phpcpd": "2.0.1"
     },
     "autoload" : {
         "psr-4" : {
