@@ -46,6 +46,7 @@ abstract class AnalyzerAbstract
         if (empty($this->name)) {
             $explode = explode('\\', get_class($this));
             $this->name = array_pop($explode);
+            array_pop($explode); // "Analyzer"
             $this->languageName = array_pop($explode);
         }
 
