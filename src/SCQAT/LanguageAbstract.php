@@ -2,6 +2,8 @@
 
 namespace SCQAT;
 
+use Symfony\Component\Finder\Finder;
+
 /**
  * The contract one has to satisfy to implement a code language
  */
@@ -24,7 +26,7 @@ abstract class LanguageAbstract
         $folder = dirname(__FILE__).str_replace("\\", DIRECTORY_SEPARATOR, ltrim(get_called_class(), "SCQAT")).DIRECTORY_SEPARATOR."Analyzer";
         $analyzersNames = array();
         if (file_exists($folder)) {
-            $finder = new \Symfony\Component\Finder\Finder();
+            $finder = new Finder();
             $finder->files()->name('*.php')->in($folder)->depth("== 0");
             if (count($finder) > 0) {
                 foreach ($finder as $file) {

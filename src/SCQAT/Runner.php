@@ -68,7 +68,7 @@ class Runner
      * @param  string                  $languageName The wanted language name
      * @return \SCQAT\LanguageAbstract The language class instance
      */
-    private function getLanguageClass($languageName)
+    private function getLanguage($languageName)
     {
         // Make a new instance if not already made
         if (empty($this->languagesInstances[$languageName])) {
@@ -89,7 +89,7 @@ class Runner
      * @param  string                  $languageName The wanted analyzer language name
      * @return \SCQAT\LanguageAbstract The language class instance
      */
-    private function getAnalyzerClass($analyzerName, $languageName)
+    private function getAnalyzer($analyzerName, $languageName)
     {
         // Make a new instance if not already made
         if (empty($this->analyzersInstances[$languageName][$analyzerName])) {
@@ -138,18 +138,18 @@ class Runner
         $this->gatherLanguages();
 
         foreach ($this->languagesNames as $languageName) {
-            $languageClass = $this->getLanguageClass($languageName);
-            $this->analyzersNames[$languageName] = $languageClass::getAnalyzersNames();
+            $language = $this->getLanguage($languageName);
+            $this->analyzersNames[$languageName] = $language::getAnalyzersNames();
             foreach ($this->analyzersNames[$languageName] as $analyzerName) {
-                $analyzerClass = $this->getAnalyzerClass($analyzerName, $languageName);
-                if (!empty($analyzerClass->needAllFiles) && $analyzerClass->needAllFiles === true) {
-                    $this->analyze($analyzerClass);
+                $analyzer = $this->getAnalyzer($analyzerName, $languageName);
+                if (!empty($analyzer->needAllFiles) && $analyzer->needAllFiles === true) {
+                    $this->analyze($analyzer);
                 } else {
                     foreach ($this->context->files as $fileName) {
-                        if ($languageClass->fileNameMatcher($fileName) === false) {
+                        if ($language->fileNameMatcher($fileName) === false) {
                             continue;
                         }
-                        $this->analyze($analyzerClass, $fileName);
+                        $this->analyze($analyzer, $fileName);
                     }
                 }
             }
