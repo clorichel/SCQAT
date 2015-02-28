@@ -10,12 +10,6 @@ use Symfony\Component\Finder\Finder;
 class Runner
 {
     /**
-     * Runner "initialization date" unix timestamp with microseconds
-     * @var float
-     */
-    private $initialized = null;
-
-    /**
      * Runner analysis duration in s
      * @var float
      */
@@ -50,14 +44,6 @@ class Runner
      * @var array
      */
     private $analyzersInstances = array();
-
-    /**
-     * Initializing
-     */
-    public function __construct()
-    {
-        $this->initialized = microtime(true);
-    }
 
     /**
      * Gathering each implemented (known) languages names
@@ -119,11 +105,35 @@ class Runner
     }
 
     /**
+     * Do analyze a file with a specific analyzer
+     * @param \SCQAT\AnalyzerAbstract $analyzer The analyzer instance to use
+     * @param string                  $fileName The file name to analyze
+     */
+    private function analyze(\SCQAT\AnalyzerAbstract $analyzer, $fileName = null)
+    {
+        $this->context->report->analyzerRun($fileName, $analyzer);
+        $result = $analyzer->analyze($this->context, $fileName);
+        if (!$result instanceof \SCQAT\Result) {
+            $result = new \SCQAT\Result();
+            $result->isSuccess = false;
+            $result->value = "Wrong result !";
+            $result->description = "The analyzer did not returned a \\SCQAT\\Result instance";
+        }
+        $result->languageName = $analyzer->getLanguageName();
+        $result->analyzerName = $analyzer->getName();
+        if (!empty($fileName)) {
+            $result->fileName = $fileName;
+        }
+        $this->context->report->analyzerResult($result);
+    }
+
+    /**
      * Starting SCQAT runner
      * @param \SCQAT\Context $context The SCQAT Context on which to run
      */
     public function run(\SCQAT\Context $context)
     {
+        $started = microtime(true);
         $this->context = $context;
         $this->gatherLanguages();
 
@@ -133,39 +143,18 @@ class Runner
             foreach ($this->analyzersNames[$languageName] as $analyzerName) {
                 $analyzerClass = $this->getAnalyzerClass($analyzerName, $languageName);
                 if (!empty($analyzerClass->needAllFiles) && $analyzerClass->needAllFiles === true) {
-                    $context->report->analyzerRun("", $analyzerName, $languageName, $analyzerClass);
-                    $result = $analyzerClass->analyze($context);
-                    if (!$result instanceof \SCQAT\Result) {
-                        $result = new \SCQAT\Result();
-                        $result->isSuccess = false;
-                        $result->value = "Wrong result !";
-                        $result->description = "The analyzer did not returned a \\SCQAT\\Result instance";
-                    }
-                    $result->languageName = $languageName;
-                    $result->analyzerName = $analyzerName;
-                    $context->report->analyzerResult($result);
+                    $this->analyze($analyzerClass);
                 } else {
                     foreach ($this->context->files as $fileName) {
                         if ($languageClass->fileNameMatcher($fileName) === false) {
                             continue;
                         }
-                        $context->report->analyzerRun($fileName, $analyzerName, $languageName, $analyzerClass);
-                        $result = $analyzerClass->analyze($context, $fileName);
-                        if (!$result instanceof \SCQAT\Result) {
-                            $result = new \SCQAT\Result();
-                            $result->isSuccess = false;
-                            $result->value = "Wrong result !";
-                            $result->description = "The analyzer did not returned a \\SCQAT\\Result instance";
-                        }
-                        $result->languageName = $languageName;
-                        $result->analyzerName = $analyzerName;
-                        $result->fileName = $fileName;
-                        $context->report->analyzerResult($result);
+                        $this->analyze($analyzerClass, $fileName);
                     }
                 }
             }
         }
 
-        $this->duration = (microtime(true) - $this->initialized);
+        $this->duration = (microtime(true) - $started);
     }
 }

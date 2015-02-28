@@ -36,16 +36,14 @@ class Report
 
     /**
      * Report running an analyzer
-     * @param string                  $fileName         The filename on which the analyzer is running
-     * @param string                  $analyzerName     The analyzer name
-     * @param string                  $languageName     The code language name
-     * @param \SCQAT\AnalyzerAbstract $analyzerInstance The analyzer instance
+     * @param string                  $fileName The filename on which the analyzer is running
+     * @param \SCQAT\AnalyzerAbstract $analyzer The analyzer instance
      */
-    public function analyzerRun($fileName, $analyzerName, $languageName, $analyzerInstance)
+    public function analyzerRun($fileName, $analyzer)
     {
         $fileName = (string) $fileName;
-        $analyzerName = (string) $analyzerName;
-        $languageName = (string) $languageName;
+        $languageName = $analyzer->getLanguageName();
+        $analyzerName = $analyzer->getName();
 
         // Is it the first time this language is used ?
         if (! array_key_exists($languageName, $this->analyzersNames)) {
@@ -56,7 +54,7 @@ class Report
         // Is it the first time this analyzer is used ?
         if (! in_array($analyzerName, $this->analyzersNames[$languageName])) {
             $this->analyzersNames[$languageName][] = $analyzerName;
-            $this->runHook("Analyzer_First_Use", $analyzerName, $languageName, $analyzerInstance);
+            $this->runHook("Analyzer_First_Use", $analyzer);
         }
 
         $this->runHook("Analyzing_File", $fileName);

@@ -164,10 +164,10 @@ class CLI extends \Symfony\Component\Console\Application
             $output->writeln("<info>Running analyzers for language</info> <comment>".$languageName."</comment>");
         });
 
-        $context->report->addHook("Analyzer_First_Use", function ($analyzerName, $languageName, \SCQAT\AnalyzerAbstract $analyzerInstance) use ($output) {
+        $context->report->addHook("Analyzer_First_Use", function (\SCQAT\AnalyzerAbstract $analyzer) use ($output) {
             $output->writeln("");
-            $message = "<info>[".$languageName." > ".$analyzerName."] ".$analyzerInstance::$introductionMessage."...</info>";
-            if (!empty($analyzerInstance->needAllFiles) && $analyzerInstance->needAllFiles === true) {
+            $message = "<info>[".$analyzer->getLanguageName()." > ".$analyzer->getName()."] ".$analyzer::$introductionMessage."...</info>";
+            if (!empty($analyzer->needAllFiles) && $analyzer->needAllFiles === true) {
                 $output->write($message." ");
             } else {
                 $output->writeln($message);
