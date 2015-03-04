@@ -39,7 +39,7 @@ class Report
      * @param string                  $fileName The filename on which the analyzer is running
      * @param \SCQAT\AnalyzerAbstract $analyzer The analyzer instance
      */
-    public function analyzerRun($fileName, $analyzer)
+    public function analyzerRun($fileName, \SCQAT\AnalyzerAbstract $analyzer)
     {
         $fileName = (string) $fileName;
         $languageName = $analyzer->getLanguageName();
