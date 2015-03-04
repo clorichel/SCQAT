@@ -3,6 +3,7 @@
 namespace SCQAT;
 
 use Symfony\Component\Process\Process;
+use Symfony\Component\Finder\Finder;
 
 /**
  * SCQAT file gatherer methods
@@ -25,6 +26,23 @@ class FileGatherer
     }
 
     /**
+     * Gather all files in the analyzed directory
+     * @return array List of all files names
+     */
+    public function all()
+    {
+        $finder = new Finder();
+        $finder->files()->in($this->analyzedDirectory)->exclude("/vendor");
+        $files = array();
+
+        foreach ($finder as $file) {
+            $files[] = $file->getRealPath();
+        }
+
+        return $files;
+    }
+
+    /**
      * Gather all git files in the analyzed directory
      * @throws \Exception If not able to "git ls-files" in the analyzed directory
      * @return array      List of all git files names
@@ -35,7 +53,7 @@ class FileGatherer
         $process->run();
 
         if (!$process->isSuccessful()) {
-            throw new \Exception("Unable to 'git ls-files'. Is current folder a git repository ? Have you staged the files you want to analyze ?");
+            throw new \Exception("Unable to 'git ls-files'. Is current folder a git repository ? Have you staged the files you want to analyze ?", 101);
         }
 
         return $this->explodeFilesList(trim($process->getOutput()));

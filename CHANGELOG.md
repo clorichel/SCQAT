@@ -1,10 +1,4 @@
-## v0.4 (work in progress)
-
-TODO :
-
- - reduce \SCQAT\CLI coupling
- - add support for non git folders to analyze
-   - default method (no option) should try `git ls-files` first, before simply listing files if not a git repository
+## v0.4 (2015-03-04)
 
 Features :
 
@@ -13,17 +7,28 @@ Features :
  - improved [PHP > PhpCsFixer] result description
  - improved [PHP > PhpCs] result description
  - added [PHP > PhpCpd] copy/paste detector (file by file)
+ - added support for non git folders to analyze :
+   - default method (no cli option) will try `git ls-files` first
+   - if not a git repository, all files will be listed
 
 Bugfixes :
 
- - fixed all SensioLabsInsight violations for analyse #1
- - ensured runner languages and analyzers classes
+ - fixed all SensioLabsInsight violations for analyze #1
+ - ensured runner languages and analyzers classes types
 
 Documentation :
 
  - added new `-f` option to the CLI manual
  - corrected compared version to HEAD in doc and CLI error returned
- - added SensioLabsInsight medal widget
+ - added SensioLabsInsight medal widget to the Readme
+ - updated CLI manual with SCQAT 0.4 output
+ - bumped Readme to 0.4
+
+*From now, TODO list will be integrated in this CHANGELOG for better usability*
+TODO :
+
+ - add support for PHPUnit
+ - add `.scqat` configuration file support with "exclude analyzer" functionnality
 
 ## v0.3 (2015-02-26)
 

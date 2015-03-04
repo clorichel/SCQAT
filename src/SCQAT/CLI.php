@@ -3,8 +3,6 @@
 namespace SCQAT;
 
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputDefinition;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -57,12 +55,6 @@ class CLI extends \Symfony\Component\Console\Application
     private $input;
 
     /**
-     * List of files to be analyzed
-     * @var array
-     */
-    private $files = array();
-
-    /**
      * The long date format (as expected by PHP date function)
      * @var string
      */
@@ -92,6 +84,9 @@ class CLI extends \Symfony\Component\Console\Application
         $this->input = $input;
         $this->output = $output;
 
+        // Binding input definition
+        $this->input->bind(new \SCQAT\CLI\Definition());
+
         // Introducing
         $date = new \DateTime();
         $output->writeln("<fg=white;options=bold;bg=blue>[ ".$this->name." (v".$this->version.") ]</fg=white;options=bold;bg=blue>");
@@ -100,19 +95,17 @@ class CLI extends \Symfony\Component\Console\Application
 
         // Gathering files to analyze
         $output->write("<info>Gathering files to analyze...</info> ");
-        if (! $this->gatherFiles()) {
-            throw new \Exception("Unable to gather files to analyze");
-        }
-        $output->writeln("<comment>".count($this->files)." file(s)</comment>");
+        $files = $this->gatherFiles();
+        $output->writeln("<comment>".count($files)." file(s)</comment>");
 
-        if (count($this->files)) {
-            foreach ($this->files as $file) {
+        if (count($files)) {
+            foreach ($files as $file) {
                 $output->writeln(" - ".str_replace($this->analyzedDirectory, "", $file));
             }
 
             // Creating SCQAT Context with files gathered
             $context = new \SCQAT\Context($this->vendorDirectory, $this->analyzedDirectory);
-            $context->files = $this->files;
+            $context->files = $files;
             // Populating context hooks
             $this->configureContextHooks($context);
 
@@ -204,20 +197,9 @@ class CLI extends \Symfony\Component\Console\Application
      */
     private function gatherFiles()
     {
-        $definition = new InputDefinition(array(
-            new InputOption("file", "f", InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED),
-            new InputOption("directory", "d", InputOption::VALUE_REQUIRED),
-            new InputOption("modified", null, InputOption::VALUE_NONE),
-            new InputOption("pre-commit", null, InputOption::VALUE_NONE),
-        ));
-
-        $this->input->bind($definition);
-
         $files = $this->input->getOption("file");
         if (!empty($files)) {
-            $this->files = $files;
-
-            return true;
+            return $files;
         }
 
         $analyzedDirectory = "";
@@ -230,15 +212,20 @@ class CLI extends \Symfony\Component\Console\Application
 
         if ($this->input->getOption("modified") === true) {
             // User wants to analyze all modified files (staged, unstaged and untracked)
-            $this->files = $fileGatherer->gitModified();
+            return $fileGatherer->gitModified();
         } elseif ($this->input->getOption("pre-commit") === true) {
             // User wants to analyze all staged files (before commit)
-            $this->files = $this->gatherFilesPreCommit();
+            return $this->gatherFilesPreCommit();
         } else {
             // Default action, user wants to analyze all files in the git repository
-            $this->files = $fileGatherer->gitAll();
+            try {
+                return $fileGatherer->gitAll();
+            } catch (\Exception $e) {
+                // Not a git repository ? Just grab all files
+                if ($e->getCode() == 101) {
+                    return $fileGatherer->all();
+                }
+            }
         }
-
-        return true;
     }
 }

@@ -14,7 +14,7 @@ class PhpCpd extends \SCQAT\AnalyzerAbstract
     /**
      * {@inheritdoc}
      */
-    public static $introductionMessage = "Detecting file by file Copy/Paste";
+    public static $introductionMessage = "Detecting file by file copy/paste";
 
     /**
      * {@inheritdoc}
