@@ -215,7 +215,7 @@ class CLI extends \Symfony\Component\Console\Application
             return $fileGatherer->gitModified();
         } elseif ($this->input->getOption("pre-commit") === true) {
             // User wants to analyze all staged files (before commit)
-            return $this->gatherFilesPreCommit();
+            return $fileGatherer->gitPreCommit();
         } else {
             // Default action, user wants to analyze all files in the git repository
             try {
