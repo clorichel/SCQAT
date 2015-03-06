@@ -1,3 +1,22 @@
+## v0.5 (work in progress)
+
+Features :
+
+ - refactored report hooks for efficiency, simplicity and modularity
+
+Bugfixes :
+
+ - pre-commit was not working after CLI refactoring
+
+Documentation :
+
+ - added updating info in Readme
+
+TODO :
+
+ - [PHP > PhpDoc] analyzer doesn't work when file has shebang #!/usr/bin/php
+ - modularize dependencies with composer suggest (limit to PHP with [PHP > Lint] analyzer)
+
 ## v0.4 (2015-03-04)
 
 Features :
@@ -25,6 +44,7 @@ Documentation :
  - bumped Readme to 0.4
 
 *From now, TODO list will be integrated in this CHANGELOG for better usability*
+
 TODO :
 
  - add support for PHPUnit

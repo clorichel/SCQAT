@@ -48,16 +48,16 @@ class Report
         // Is it the first time this language is used ?
         if (! array_key_exists($languageName, $this->analyzersNames)) {
             $this->analyzersNames[$languageName] = array();
-            $this->runHook("Language_First_Use", $languageName);
+            $this->runHook("languageFirstUse", $languageName);
         }
 
         // Is it the first time this analyzer is used ?
         if (! in_array($analyzerName, $this->analyzersNames[$languageName])) {
             $this->analyzersNames[$languageName][] = $analyzerName;
-            $this->runHook("Analyzer_First_Use", $analyzer);
+            $this->runHook("analyzerFirstUse", $analyzer);
         }
 
-        $this->runHook("Analyzing_File", $fileName);
+        $this->runHook("analyzingFile", $fileName);
     }
 
     /**
@@ -69,33 +69,32 @@ class Report
         if ($result->isSuccess === false) {
             $this->context->hadError = true;
         }
-        $this->runHook("Analyzer_Result", $result);
+        $this->runHook("analyzerResult", $result);
     }
 
     /**
-     * Add a report hook
-     * @param string   $hookName The hook name
-     * @param \Closure $function The function to run when this hook is triggered
+     * Run a specific report hook on each attached report hooks
+     * @param string $hookName  The hook to trigger (its method name)
+     * @param mixed  $arguments One or more argument to pass to final hook methods (taken by func_get_args)
      */
-    public function addHook($hookName, \Closure $function)
-    {
-        if (empty($this->hooks[$hookName])) {
-            $this->hooks[$hookName] = array();
-        }
-        $this->hooks[$hookName][] = $function;
-    }
-
-    /**
-     * Run a report hook (ensuring it has been configured)
-     */
-    public function runHook()
+    public function runHook($hookName, $arguments)
     {
         $args = func_get_args();
         $hookName = array_shift($args);
-        if (!empty($this->hooks[$hookName])) {
-            foreach ($this->hooks[$hookName] as $hookFunction) {
-                call_user_func_array($hookFunction, $args);
-            }
+        foreach ($this->hooks as $reportHooks) {
+            call_user_func_array(array($reportHooks, $hookName), $args);
         }
+        if ($arguments) {
+            // Just do nothing, but avoid unused parameter alert
+        }
+    }
+
+    /**
+     * Attach a set of report hooks to this report instance
+     * @param \SCQAT\Report\HooksAbstract $reportHooks The report HooksAbstract instance
+     */
+    public function attachHooks(\SCQAT\Report\HooksAbstract $reportHooks)
+    {
+        $this->hooks[] = $reportHooks;
     }
 }

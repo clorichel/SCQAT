@@ -2,6 +2,7 @@
     "name": "clorichel/scqat",
     "description" : "Standardized Code Quality Assurance Tool",
     "type" : "library",
+    "keywords": [ "code", "quality", "assurance", "qa", "php", "cli", "report", "standard", "analyze", "analyzer", "simple", "efficient", "precommit", "pre-commit", "hook", "team", "skills", "continuous", "integration", "rating", "ranking" ],
     "homepage" : "https://github.com/clorichel/SCQAT",
     "license": "Apache-2.0",
     "authors": [

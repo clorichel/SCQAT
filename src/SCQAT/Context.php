@@ -69,4 +69,16 @@ class Context
         }
         $this->errors[$fileName][] = $langageName." > ".$analyzerName;
     }
+
+    /**
+     * Attach a set of report hooks to this context report instance
+     * @param \SCQAT\Report\HooksAbstract $reportHooks The report HooksAbstract instance
+     */
+    public function attachReportHooks(\SCQAT\Report\HooksAbstract $reportHooks)
+    {
+        // We ensure the context is always attached to the report hook as we know we need it for the CLI
+        $reportHooks->setContext($this);
+        // We attach the reportHooks
+        $this->report->attachHooks($reportHooks);
+    }
 }

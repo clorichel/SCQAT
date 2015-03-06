@@ -16,13 +16,13 @@ SCQAT relies on [Composer](https://getcomposer.org/) magic to manage dependencie
 
 We will assume that you will run `composer.phar` locally placed in a newly created `/path/to/folder` directory.
 
-### Install SCQAT
+### Install or update SCQAT
 
 ```
 php composer.phar require clorichel/scqat:0.4
 ```
 
-Thanks to each Composer contributor, yes, that was it.
+Thanks to each Composer contributor, yes, that was it. First composer require will install everything, another require in the same folder with a new version number will simply update.
 
 #### Globally
 
@@ -34,6 +34,8 @@ ln -s /path/to/folder/vendor/bin/scqat /usr/local/bin/scqat
 
 Command failed ? Just run again with sudo.
 In OSX ? Create `/usr/local/bin/` folder which may not exist.
+
+There is absolutely no need to run that command again when updating SCQAT.
 
 ## Usage
 

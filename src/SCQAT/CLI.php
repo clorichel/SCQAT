@@ -106,8 +106,8 @@ class CLI extends \Symfony\Component\Console\Application
             // Creating SCQAT Context with files gathered
             $context = new \SCQAT\Context($this->vendorDirectory, $this->analyzedDirectory);
             $context->files = $files;
-            // Populating context hooks
-            $this->configureContextHooks($context);
+            // Attach CLI specific report hooks to the context
+            $context->attachReportHooks(new \SCQAT\CLI\ReportHooks($output));
 
             // Run SCQAT runner on the context
             $this->runner->run($context);
@@ -142,53 +142,6 @@ class CLI extends \Symfony\Component\Console\Application
         if (!empty($context) && $context->hadError !== false) {
             return 1;
         }
-    }
-
-    /**
-     * Configure hooks in the context to display evenments based on the CLI paradygm
-     * @param \SCQAT\Context $context The SCQAT context instance
-     */
-    private function configureContextHooks($context)
-    {
-        $output = $this->output;
-
-        $context->report->addHook("Language_First_Use", function ($languageName) use ($output) {
-            $output->writeln("");
-            $output->writeln("<info>Running analyzers for language</info> <comment>".$languageName."</comment>");
-        });
-
-        $context->report->addHook("Analyzer_First_Use", function (\SCQAT\AnalyzerAbstract $analyzer) use ($output) {
-            $output->writeln("");
-            $message = "<info>[".$analyzer->getLanguageName()." > ".$analyzer->getName()."] ".$analyzer::$introductionMessage."...</info>";
-            if (!empty($analyzer->needAllFiles) && $analyzer->needAllFiles === true) {
-                $output->write($message." ");
-            } else {
-                $output->writeln($message);
-            }
-        });
-
-        $context->report->addHook("Analyzing_File", function ($fileName) use ($output) {
-            if (!empty($fileName)) {
-                $output->write(" - ".str_replace($this->analyzedDirectory, "", $fileName)." ");
-            }
-        });
-
-        $context->report->addHook("Analyzer_Result", function (\SCQAT\Result $result) use ($output) {
-            $message = "";
-            if ($result->isSuccess === true) {
-                $message = empty($result->value) ? "OK" : $result->value;
-                $output->writeln("<comment>".$message."</comment>");
-                if (!empty($result->description)) {
-                    $output->writeln("<comment>".$result->description."</comment>");
-                }
-            } else {
-                $message = empty($result->value) ? "KO" : $result->value;
-                $output->writeln("<error>".$message."</error>");
-                if (!empty($result->description)) {
-                    $output->writeln("<error>".$result->description."</error>");
-                }
-            }
-        });
     }
 
     /**
