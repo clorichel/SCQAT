@@ -27,7 +27,7 @@ class Composer extends \SCQAT\AnalyzerAbstract
     /**
      * {@inheritdoc}
      */
-    public function analyze(\SCQAT\Context $context, $analyzedFileName = null)
+    public function analyze($analyzedFileName = null)
     {
         $result = new \SCQAT\Result();
 
@@ -35,7 +35,7 @@ class Composer extends \SCQAT\AnalyzerAbstract
         $composerJsonDetected = false;
         $composerLockDetected = false;
 
-        foreach ($context->files as $file) {
+        foreach ($this->context->files as $file) {
             if ($file === 'composer.json') {
                 $composerJsonDetected = true;
             }

@@ -20,13 +20,13 @@ class PhpDoc extends \SCQAT\AnalyzerAbstract
     /**
      * {@inheritdoc}
      */
-    public function analyze(\SCQAT\Context $context, $analyzedFileName = null)
+    public function analyze($analyzedFileName = null)
     {
         $result = new \SCQAT\Result();
         // phpDoc will parse file and write structure.xml in this directory
-        $targetDirectory = $context->analyzedDirectory.".scqat-phpdoc-temp".uniqid().DIRECTORY_SEPARATOR;
+        $targetDirectory = $this->context->analyzedDirectory.".scqat-phpdoc-temp".uniqid().DIRECTORY_SEPARATOR;
 
-        $processBuilder = new ProcessBuilder(array("php", $context->vendorDirectory."bin/phpdoc", "-f", $analyzedFileName, "-i", "vendor/", "-t", $targetDirectory, "--template=", "xml"));
+        $processBuilder = new ProcessBuilder(array("php", $this->context->vendorDirectory."bin/phpdoc", "-f", $analyzedFileName, "-i", "vendor/", "-t", $targetDirectory, "--template=", "xml"));
         $process = $processBuilder->getProcess();
         $process->run();
 

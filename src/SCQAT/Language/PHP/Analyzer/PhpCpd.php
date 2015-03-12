@@ -19,11 +19,11 @@ class PhpCpd extends \SCQAT\AnalyzerAbstract
     /**
      * {@inheritdoc}
      */
-    public function analyze(\SCQAT\Context $context, $analyzedFileName = null)
+    public function analyze($analyzedFileName = null)
     {
         $result = new \SCQAT\Result();
 
-        $processBuilder = new ProcessBuilder(array("php",  $context->vendorDirectory."bin/phpcpd", $analyzedFileName));
+        $processBuilder = new ProcessBuilder(array("php",  $this->context->vendorDirectory."bin/phpcpd", $analyzedFileName));
         $process = $processBuilder->getProcess();
         $process->run();
 

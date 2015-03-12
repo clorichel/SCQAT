@@ -98,7 +98,7 @@ class Runner
             if (!is_subclass_of($className, '\\SCQAT\\AnalyzerAbstract')) {
                 return false;
             }
-            $this->analyzersInstances[$languageName][$analyzerName] = new $className();
+            $this->analyzersInstances[$languageName][$analyzerName] = new $className($this->context);
         }
 
         return $this->analyzersInstances[$languageName][$analyzerName];
@@ -112,7 +112,7 @@ class Runner
     private function analyze(\SCQAT\AnalyzerAbstract $analyzer, $fileName = null)
     {
         $this->context->report->analyzerRun($fileName, $analyzer);
-        $result = $analyzer->analyze($this->context, $fileName);
+        $result = $analyzer->analyze($fileName);
         if (!$result instanceof \SCQAT\Result) {
             $result = new \SCQAT\Result();
             $result->isSuccess = false;

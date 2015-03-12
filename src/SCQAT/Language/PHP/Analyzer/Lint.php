@@ -19,11 +19,9 @@ class Lint extends \SCQAT\AnalyzerAbstract
     /**
      * {@inheritdoc}
      */
-    public function analyze(\SCQAT\Context $context, $analyzedFileName = null)
+    public function analyze($analyzedFileName = null)
     {
         $result = new \SCQAT\Result();
-
-        unset($context->willNeverExistFakeVar); // This is for PHPMD "unused" alert
 
         $processBuilder = new ProcessBuilder(array("php", "-l", $analyzedFileName));
         $process = $processBuilder->getProcess();

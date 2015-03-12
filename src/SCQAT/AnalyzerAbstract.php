@@ -29,13 +29,28 @@ abstract class AnalyzerAbstract
      * The name of this analyzer (its class name)
      * @var string
      */
-    private $name = null;
+    protected $name = null;
 
     /**
      * The name of the language of this analyzer (its language class name)
      * @var string
      */
-    private $languageName = null;
+    protected $languageName = null;
+
+    /**
+     * The SCQAT Context on which to run
+     * @var \SCQAT\Context
+     */
+    protected $context = null;
+
+    /**
+     * Initialize this analyer with SCQAT running context
+     * @param \SCQAT\Context $context The SCQAT running context
+     */
+    public function __construct(\SCQAT\Context $context)
+    {
+        $this->context = $context;
+    }
 
     /**
      * Get the name of this analyzer (its class name)
@@ -67,10 +82,9 @@ abstract class AnalyzerAbstract
     }
 
     /**
-     * Run an analysis on a file given the running context
-     * @param  \SCQAT\Context $context          The SCQAT running context
-     * @param  string         $analyzedFileName (optional) The filename to analyze (if null, analyzer do "needs all files")
-     * @return \SCQAT\Result  The result of the analysis
+     * Run an analysis on a file
+     * @param  string        $analyzedFileName (optional) The filename to analyze (if null, analyzer do "needs all files")
+     * @return \SCQAT\Result The result of the analysis
      */
-    abstract public function analyze(\SCQAT\Context $context, $analyzedFileName = null);
+    abstract public function analyze($analyzedFileName = null);
 }
