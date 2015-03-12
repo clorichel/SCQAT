@@ -32,10 +32,10 @@ abstract class AnalyzerAbstract
     protected $name = null;
 
     /**
-     * The name of the language of this analyzer (its language class name)
-     * @var string
+     * The language instance of this analyzer
+     * @var \SCQAT\LanguageAbstract
      */
-    protected $languageName = null;
+    protected $language = null;
 
     /**
      * The SCQAT Context on which to run
@@ -44,12 +44,23 @@ abstract class AnalyzerAbstract
     protected $context = null;
 
     /**
-     * Initialize this analyer with SCQAT running context
-     * @param \SCQAT\Context $context The SCQAT running context
+     * This language specific configuration part (SCQAT.Analyzers.[LanguageName].[AnalyzerName])
+     * @var array
      */
-    public function __construct(\SCQAT\Context $context)
+    protected $configuration = null;
+
+    /**
+     * Initialize this analyzer with SCQAT running context
+     * @param \SCQAT\Context          $context  The SCQAT running context
+     * @param \SCQAT\LanguageAbstract $language This analyzer language instance
+     */
+    public function __construct(\SCQAT\Context $context, \SCQAT\LanguageAbstract $language)
     {
         $this->context = $context;
+        $this->language = $language;
+        if (! empty($this->language->configuration[$this->getName()])) {
+            $this->configuration = $this->language->configuration[$this->getName()];
+        }
     }
 
     /**
@@ -61,8 +72,6 @@ abstract class AnalyzerAbstract
         if (empty($this->name)) {
             $explode = explode('\\', get_class($this));
             $this->name = array_pop($explode);
-            array_pop($explode); // "Analyzer"
-            $this->languageName = array_pop($explode);
         }
 
         return $this->name;
@@ -74,11 +83,7 @@ abstract class AnalyzerAbstract
      */
     public function getLanguageName()
     {
-        if (empty($this->languageName)) {
-            $this->getName();
-        }
-
-        return $this->languageName;
+        return $this->language->getName();
     }
 
     /**

@@ -17,6 +17,8 @@
         "symfony/console": "2.6.4",
         "symfony/finder": "2.6.4",
         "symfony/filesystem": "2.6.4",
+        "symfony/yaml": "2.6.4",
+        "symfony/config": "2.6.4",
         "phpmd/phpmd": "2.2.0",
         "squizlabs/php_codesniffer": "2.2.0",
         "fabpot/php-cs-fixer": "1.5",

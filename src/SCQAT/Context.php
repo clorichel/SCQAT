@@ -32,6 +32,12 @@ class Context
     public $report = null;
 
     /**
+     * The processed configuration array
+     * @var array
+     */
+    public $configuration = null;
+
+    /**
      * Determine if the current run had an error
      * @var boolean
      */
@@ -53,6 +59,7 @@ class Context
         $this->vendorDirectory = $vendorDirectory;
         $this->analyzedDirectory = $analyzedDirectory;
         $this->report = new \SCQAT\Report($this);
+        $this->configuration = \SCQAT\Configuration::read($analyzedDirectory);
     }
 
     /**

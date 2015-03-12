@@ -22,8 +22,8 @@ class Lint extends \SCQAT\AnalyzerAbstract
     public function analyze($analyzedFileName = null)
     {
         $result = new \SCQAT\Result();
-
-        $processBuilder = new ProcessBuilder(array("php", "-l", $analyzedFileName));
+        
+        $processBuilder = new ProcessBuilder(array($this->language->configuration["command"], "-l", $analyzedFileName));
         $process = $processBuilder->getProcess();
         $process->run();
 

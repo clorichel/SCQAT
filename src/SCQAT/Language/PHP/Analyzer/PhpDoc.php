@@ -26,7 +26,7 @@ class PhpDoc extends \SCQAT\AnalyzerAbstract
         // phpDoc will parse file and write structure.xml in this directory
         $targetDirectory = $this->context->analyzedDirectory.".scqat-phpdoc-temp".uniqid().DIRECTORY_SEPARATOR;
 
-        $processBuilder = new ProcessBuilder(array("php", $this->context->vendorDirectory."bin/phpdoc", "-f", $analyzedFileName, "-i", "vendor/", "-t", $targetDirectory, "--template=", "xml"));
+        $processBuilder = new ProcessBuilder(array($this->language->configuration["command"], $this->context->vendorDirectory."bin/phpdoc", "-f", $analyzedFileName, "-i", "vendor/", "-t", $targetDirectory, "--template=", "xml"));
         $process = $processBuilder->getProcess();
         $process->run();
 

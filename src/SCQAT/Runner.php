@@ -77,7 +77,7 @@ class Runner
             if (!is_subclass_of($className, '\\SCQAT\\LanguageAbstract')) {
                 return false;
             }
-            $this->languagesInstances[$languageName] = new $className();
+            $this->languagesInstances[$languageName] = new $className($this->context);
         }
 
         return $this->languagesInstances[$languageName];
@@ -86,11 +86,12 @@ class Runner
     /**
      * Getting a language analyzer class instance, ensuring one instance per analyzer
      * @param  string                  $analyzerName The wanted analyzer name
-     * @param  string                  $languageName The wanted analyzer language name
-     * @return \SCQAT\LanguageAbstract The language class instance
+     * @param  \SCQAT\LanguageAbstract $language     The language class instance
+     * @return \SCQAT\AnalyzerAbstract The analyzer class instance
      */
-    private function getAnalyzer($analyzerName, $languageName)
+    private function getAnalyzer($analyzerName, $language)
     {
+        $languageName = $language->getName();
         // Make a new instance if not already made
         if (empty($this->analyzersInstances[$languageName][$analyzerName])) {
             $className = "\\SCQAT\\Language\\".$languageName."\\Analyzer\\".$analyzerName;
@@ -98,7 +99,7 @@ class Runner
             if (!is_subclass_of($className, '\\SCQAT\\AnalyzerAbstract')) {
                 return false;
             }
-            $this->analyzersInstances[$languageName][$analyzerName] = new $className($this->context);
+            $this->analyzersInstances[$languageName][$analyzerName] = new $className($this->context, $language);
         }
 
         return $this->analyzersInstances[$languageName][$analyzerName];
@@ -141,7 +142,7 @@ class Runner
             $language = $this->getLanguage($languageName);
             $this->analyzersNames[$languageName] = $language::getAnalyzersNames();
             foreach ($this->analyzersNames[$languageName] as $analyzerName) {
-                $analyzer = $this->getAnalyzer($analyzerName, $languageName);
+                $analyzer = $this->getAnalyzer($analyzerName, $language);
                 if (!empty($analyzer->needAllFiles) && $analyzer->needAllFiles === true) {
                     $this->analyze($analyzer);
                 } else {

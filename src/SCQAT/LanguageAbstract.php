@@ -10,11 +10,48 @@ use Symfony\Component\Finder\Finder;
 abstract class LanguageAbstract
 {
     /**
-     * Determine if a file should be handled by the language depending on its name
-     * @param  string  $filename The file name to be checked
-     * @return boolean
+     * This language specific configuration part (SCQAT.Analyzers.[LanguageName])
+     * @var array
      */
-    abstract public function fileNameMatcher($filename);
+    public $configuration = null;
+
+    /**
+     * The name of this language (its class name)
+     * @var string
+     */
+    protected $name = null;
+
+    /**
+     * The SCQAT Context on which to run
+     * @var \SCQAT\Context
+     */
+    protected $context = null;
+
+    /**
+     * Initialize this language with SCQAT running context
+     * @param \SCQAT\Context          $context  The SCQAT running context
+     */
+    public function __construct(\SCQAT\Context $context)
+    {
+        $this->context = $context;
+        if (! empty($this->context->configuration["Analyzers"][$this->getName()])) {
+            $this->configuration = $this->context->configuration["Analyzers"][$this->getName()];
+        }
+    }
+
+    /**
+     * Get the name of this language (its class name)
+     * @return string The language name
+     */
+    public function getName()
+    {
+        if (empty($this->name)) {
+            $explode = explode('\\', get_class($this));
+            $this->name = array_pop($explode);
+        }
+
+        return $this->name;
+    }
 
     /**
      * Get the list of analyzers implemented for a specific language
@@ -37,4 +74,11 @@ abstract class LanguageAbstract
 
         return $analyzersNames;
     }
+
+    /**
+     * Determine if a file should be handled by the language depending on its name
+     * @param  string  $filename The file name to be checked
+     * @return boolean
+     */
+    abstract public function fileNameMatcher($filename);
 }
