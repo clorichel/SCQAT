@@ -136,7 +136,7 @@ class FileGatherer
     {
         $cdToAnalyzedDir = "";
         if (!empty($this->analyzedDirectory)) {
-            $cdToAnalyzedDir = "cd ".$this->analyzedDirectory." && ";
+            $cdToAnalyzedDir = "cd '".$this->analyzedDirectory."' && ";
         }
 
         return $cdToAnalyzedDir;
