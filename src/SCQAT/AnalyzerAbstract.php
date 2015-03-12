@@ -72,5 +72,5 @@ abstract class AnalyzerAbstract
      * @param  string         $analyzedFileName (optional) The filename to analyze (if null, analyzer do "needs all files")
      * @return \SCQAT\Result  The result of the analysis
      */
-    abstract public static function analyze(\SCQAT\Context $context, $analyzedFileName = null);
+    abstract public function analyze(\SCQAT\Context $context, $analyzedFileName = null);
 }

@@ -19,7 +19,7 @@ class PhpCsFixer extends \SCQAT\AnalyzerAbstract
     /**
      * {@inheritdoc}
      */
-    public static function analyze(\SCQAT\Context $context, $analyzedFileName = null)
+    public function analyze(\SCQAT\Context $context, $analyzedFileName = null)
     {
         $result = new \SCQAT\Result();
 

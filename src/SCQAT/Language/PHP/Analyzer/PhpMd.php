@@ -19,11 +19,11 @@ class PhpMd extends \SCQAT\AnalyzerAbstract
     /**
      * {@inheritdoc}
      */
-    public static function analyze(\SCQAT\Context $context, $analyzedFileName = null)
+    public function analyze(\SCQAT\Context $context, $analyzedFileName = null)
     {
         $result = new \SCQAT\Result();
 
-        $processBuilder = new ProcessBuilder(array("php", $context->vendorDirectory."bin/phpmd", $analyzedFileName, "text", "design,codesize,unusedcode,naming"));
+        $processBuilder = new ProcessBuilder(array("php", $context->vendorDirectory."bin/phpmd", $analyzedFileName, "text", "codesize,controversial,design,naming,unusedcode"));
         $process = $processBuilder->getProcess();
         $process->run();
 
