@@ -3,14 +3,20 @@
 Features :
 
  - refactored report hooks for efficiency, simplicity and modularity
+ - added `.scqat` configuration file support
+ - added `--verbose` CLI option with `-v` shortcut
+ - added `languageEndOfUse` and `analyzerEndOfUse` report hooks
 
 Bugfixes :
 
  - pre-commit was not working after CLI refactoring
+ - now working with analyzed directories containing spaces
+ - [PHP > PhpDoc] analyzer now report error if structure file cannot be generated
 
 Documentation :
 
  - added updating info in Readme
+ - added new `-v` option to the CLI manual
 
 TODO :
 
@@ -48,7 +54,7 @@ Documentation :
 TODO :
 
  - add support for PHPUnit
- - add `.scqat` configuration file support with "exclude analyzer" functionnality
+ - ~~add `.scqat` configuration file support with "exclude analyzer" functionnality~~ *(done)*
 
 ## v0.3 (2015-02-26)
 
