@@ -20,10 +20,22 @@ abstract class HooksAbstract
     abstract public function languageFirstUse($languageName);
 
     /**
+     * Triggered when all language analyzers were run
+     * @param  string $languageName The language name
+     */
+    abstract public function languageEndOfUse($languageName);
+
+    /**
      * Triggered the first time SCQAT is using an analyzer for an analysis
      * @param  \SCQAT\AnalyzerAbstract $analyzer The analyzer instance
      */
     abstract public function analyzerFirstUse(\SCQAT\AnalyzerAbstract $analyzer);
+
+    /**
+     * Triggered when all files has been analyzed by an analyzer
+     * @param  \SCQAT\AnalyzerAbstract $analyzer The analyzer instance
+     */
+    abstract public function analyzerEndOfUse(\SCQAT\AnalyzerAbstract $analyzer);
 
     /**
      * Triggered each time a file is being analyzed (whatever analyzer is used)

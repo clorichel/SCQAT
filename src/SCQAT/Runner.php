@@ -155,6 +155,8 @@ class Runner
                 }
             }
         }
+        $this->context->report->runHook("analyzerEndOfUse", $analyzer);
+        $this->context->report->runHook("languageEndOfUse", $languageName);
 
         $this->duration = (microtime(true) - $started);
     }

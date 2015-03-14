@@ -93,21 +93,35 @@ class CLI extends \Symfony\Component\Console\Application
         $output->writeln("<comment>".$date->format($this->dateFormatLong)." - Starting analysis</comment>");
         $output->writeln("");
 
+        // Determining analyzed directory
+        $analyzedDirectory = "";
+        if (!empty($this->input->getOption("directory"))) {
+            $analyzedDirectory = rtrim($this->input->getOption("directory"), "/")."/";
+        }
+        $this->analyzedDirectory = realpath($analyzedDirectory).DIRECTORY_SEPARATOR;
+
+        // Creating SCQAT Context
+        $context = new \SCQAT\Context($this->vendorDirectory, $this->analyzedDirectory);
+
         // Gathering files to analyze
         $output->write("<info>Gathering files to analyze...</info> ");
         $files = $this->gatherFiles();
         $output->writeln("<comment>".count($files)." file(s)</comment>");
 
-        if (count($files)) {
-            foreach ($files as $file) {
-                $output->writeln(" - ".str_replace($this->analyzedDirectory, "", $file));
+        $filesCount = count($files);
+        if ($filesCount) {
+            if ($filesCount <= 10 || $this->input->getOption("verbose")) {
+                foreach ($files as $file) {
+                    $output->writeln(" - ".str_replace($this->analyzedDirectory, "", $file));
+                }
+            } else {
+                $output->writeln(" - too many gathered files to show them here, use -v for verbose output");
             }
 
-            // Creating SCQAT Context with files gathered
-            $context = new \SCQAT\Context($this->vendorDirectory, $this->analyzedDirectory);
+            // Attach gathered files to the context
             $context->files = $files;
             // Attach CLI specific report hooks to the context
-            $context->attachReportHooks(new \SCQAT\CLI\ReportHooks($output));
+            $context->attachReportHooks(new \SCQAT\CLI\ReportHooks($output, ($filesCount <= 10 || $this->input->getOption("verbose"))));
 
             // Run SCQAT runner on the context
             $this->runner->run($context);
@@ -139,7 +153,7 @@ class CLI extends \Symfony\Component\Console\Application
         $output->writeln("<fg=white;options=bold;bg=blue>[ ".$this->name." (v".$this->version.") ]</fg=white;options=bold;bg=blue>");
 
         // Exit CLI application on error if any were found
-        if (!empty($context) && $context->hadError !== false) {
+        if ($context->hadError !== false) {
             return 1;
         }
     }
@@ -154,12 +168,6 @@ class CLI extends \Symfony\Component\Console\Application
         if (!empty($files)) {
             return $files;
         }
-
-        $analyzedDirectory = "";
-        if (!empty($this->input->getOption("directory"))) {
-            $analyzedDirectory = rtrim($this->input->getOption("directory"), "/")."/";
-        }
-        $this->analyzedDirectory = realpath($analyzedDirectory).DIRECTORY_SEPARATOR;
 
         $fileGatherer = new \SCQAT\FileGatherer($this->analyzedDirectory);
 

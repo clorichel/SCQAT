@@ -14,6 +14,18 @@ class Report
     private $analyzersNames = array();
 
     /**
+     * The name of the last language used (needed for languageEndOfUse)
+     * @var string
+     */
+    private $lastLanguageUsed = null;
+
+    /**
+     * The last analyzer used for a specific language (needed for analyzerEndOfUse)
+     * @var \SCQAT\AnalyzerAbstract
+     */
+    private $lastAnalyzerUsedForLanguage = null;
+
+    /**
      * List of hooks, categorized by their "hookName" array key
      * @var array
      */
@@ -47,14 +59,28 @@ class Report
 
         // Is it the first time this language is used ?
         if (! array_key_exists($languageName, $this->analyzersNames)) {
+            if ($this->lastLanguageUsed) {
+                if (count($this->analyzersNames[$this->lastLanguageUsed]) == 1) {
+                    $this->runHook("analyzerEndOfUse", $this->lastAnalyzerUsedForLanguage);
+                }
+                $this->runHook("languageEndOfUse", $this->lastLanguageUsed);
+            }
             $this->analyzersNames[$languageName] = array();
             $this->runHook("languageFirstUse", $languageName);
+            $this->lastLanguageUsed = $languageName;
+            $this->lastAnalyzerUsedForLanguage = null;
         }
 
         // Is it the first time this analyzer is used ?
         if (! in_array($analyzerName, $this->analyzersNames[$languageName])) {
+            // Were an analyzer run before for this language ? If yes, it has finished analyzing files.
+            if ($this->lastAnalyzerUsedForLanguage) {
+                $this->runHook("analyzerEndOfUse", $this->lastAnalyzerUsedForLanguage);
+            }
+
             $this->analyzersNames[$languageName][] = $analyzerName;
             $this->runHook("analyzerFirstUse", $analyzer);
+            $this->lastAnalyzerUsedForLanguage = $analyzer;
         }
 
         $this->runHook("analyzingFile", $fileName);

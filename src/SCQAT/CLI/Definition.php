@@ -20,6 +20,7 @@ class Definition extends InputDefinition
         parent::__construct(array(
             new InputOption("file", "f", InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED),
             new InputOption("directory", "d", InputOption::VALUE_REQUIRED),
+            new InputOption("verbose", "v", InputOption::VALUE_NONE),
             new InputOption("modified", null, InputOption::VALUE_NONE),
             new InputOption("pre-commit", null, InputOption::VALUE_NONE),
         ));
