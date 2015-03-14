@@ -22,6 +22,30 @@ class Runner
     private $context = null;
 
     /**
+     * Whitelisted languages names
+     * @var array
+     */
+    private $languagesWhitelist = array();
+
+    /**
+     * Blacklisted languages names
+     * @var array
+     */
+    private $languagesBlacklist = array();
+
+    /**
+     * Whitelisted analyzers names (LanguageName > AnalyzerName)
+     * @var array
+     */
+    private $analyzersWhitelist = array();
+
+    /**
+     * Blacklisted analyzers names (LanguageName > AnalyzerName)
+     * @var array
+     */
+    private $analyzersBlacklist = array();
+
+    /**
      * List of SCQAT implemented (known) languages names
      * @var array
      */
@@ -137,27 +161,94 @@ class Runner
         $started = microtime(true);
         $this->context = $context;
         $this->gatherLanguages();
+        $this->setWhiteAndBlacklists();
 
         foreach ($this->languagesNames as $languageName) {
-            $language = $this->getLanguage($languageName);
-            $this->analyzersNames[$languageName] = $language::getAnalyzersNames();
-            foreach ($this->analyzersNames[$languageName] as $analyzerName) {
-                $analyzer = $this->getAnalyzer($analyzerName, $language);
-                if (!empty($analyzer->needAllFiles) && $analyzer->needAllFiles === true) {
-                    $this->analyze($analyzer);
-                } else {
-                    foreach ($this->context->files as $fileName) {
-                        if ($language->fileNameMatcher($fileName) === false) {
-                            continue;
-                        }
-                        $this->analyze($analyzer, $fileName);
-                    }
-                }
+            if (!empty($this->languagesWhitelist) && ! in_array($languageName, $this->languagesWhitelist)) {
+                continue;
             }
+            if (in_array($languageName, $this->languagesBlacklist) && ! in_array($languageName, $this->languagesWhitelist)) {
+                continue;
+            }
+            $analyzer = $this->runLanguage($languageName);
         }
-        $this->context->report->runHook("analyzerEndOfUse", $analyzer);
-        $this->context->report->runHook("languageEndOfUse", $languageName);
+
+        if (!empty($analyzer)) {
+            $this->context->report->runHook("analyzerEndOfUse", $analyzer);
+        }
+        if (!empty($languageName)) {
+            $this->context->report->runHook("languageEndOfUse", $languageName);
+        }
 
         $this->duration = (microtime(true) - $started);
+    }
+
+    /**
+     * Run analyzers for this specific language name
+     * @param  string                  $languageName The language name
+     * @return \SCQAT\AnalyzerAbstract The last used analyzer instance (needed to trigger the last analyzerEndOfUse hook)
+     */
+    private function runLanguage($languageName)
+    {
+        $language = $this->getLanguage($languageName);
+        $this->analyzersNames[$languageName] = $language::getAnalyzersNames();
+        foreach ($this->analyzersNames[$languageName] as $analyzerName) {
+            if (!empty($this->analyzersWhitelist) && ! in_array($languageName." > ".$analyzerName, $this->analyzersWhitelist)) {
+                continue;
+            }
+            if (in_array($languageName." > ".$analyzerName, $this->analyzersBlacklist) && ! in_array($languageName." > ".$analyzerName, $this->analyzersWhitelist)) {
+                continue;
+            }
+            $analyzer = $this->runAnalyzer($analyzerName, $language);
+        }
+
+        return empty($analyzer) ? null : $analyzer;
+    }
+
+    /**
+     * Run a specific analyzer by its name
+     * @param  string                  $analyzerName The analyzer name
+     * @param  \SCQAT\LanguageAbstract $language     The language class instance
+     * @return \SCQAT\AnalyzerAbstract The analyzer class instance
+     */
+    private function runAnalyzer($analyzerName, \SCQAT\LanguageAbstract $language)
+    {
+        $analyzer = $this->getAnalyzer($analyzerName, $language);
+        if (!empty($analyzer->needAllFiles) && $analyzer->needAllFiles === true) {
+            $this->analyze($analyzer);
+        } else {
+            foreach ($this->context->files as $fileName) {
+                if ($language->fileNameMatcher($fileName) === false) {
+                    continue;
+                }
+                $this->analyze($analyzer, $fileName);
+            }
+        }
+
+        return $analyzer;
+    }
+
+    /**
+     * Popuplate languages and analyzers white and black lists
+     */
+    private function setWhiteAndBlacklists()
+    {
+        $config = $this->context->configuration;
+
+        if (!empty($config["Analysis"]["Languages"]["except"])) {
+            $this->languagesBlacklist = $config["Analysis"]["Languages"]["except"];
+        }
+
+        if (!empty($config["Analysis"]["Languages"]["only"])) {
+            $this->languagesWhitelist = $config["Analysis"]["Languages"]["only"];
+        }
+
+        if (!empty($config["Analysis"]["Analyzers"]["except"])) {
+            $this->analyzersBlacklist = $config["Analysis"]["Analyzers"]["except"];
+        }
+
+        if (!empty($config["Analysis"]["Analyzers"]["only"])) {
+            $this->analyzersWhitelist = $config["Analysis"]["Analyzers"]["only"];
+        }
     }
 }
