@@ -48,164 +48,24 @@ Output every files gathered and analyzed (by default, if too many files were gat
 This is a sample `scqat` output when executed on its own source code.
 
 ```
-[ SCQAT - Standardized Code Quality Assurance Tool (v0.4) ]
-2015-03-04 09:16:20 - Starting analysis
+2015-03-14 13:51:49 - Starting analysis
 
-Gathering files to analyze... 25 file(s)
- - .gitignore
- - CHANGELOG.md
- - LICENSE
- - Readme.md
- - bin/scqat
- - composer.json
- - docs/CLI/Manual.md
- - src/SCQAT/AnalyzerAbstract.php
- - src/SCQAT/CLI.php
- - src/SCQAT/CLI/Definition.php
- - src/SCQAT/Context.php
- - src/SCQAT/FileGatherer.php
- - src/SCQAT/Language/Meta.php
- - src/SCQAT/Language/Meta/Analyzer/Composer.php
- - src/SCQAT/Language/PHP.php
- - src/SCQAT/Language/PHP/Analyzer/Lint.php
- - src/SCQAT/Language/PHP/Analyzer/PhpCpd.php
- - src/SCQAT/Language/PHP/Analyzer/PhpCs.php
- - src/SCQAT/Language/PHP/Analyzer/PhpCsFixer.php
- - src/SCQAT/Language/PHP/Analyzer/PhpDoc.php
- - src/SCQAT/Language/PHP/Analyzer/PhpMd.php
- - src/SCQAT/LanguageAbstract.php
- - src/SCQAT/Report.php
- - src/SCQAT/Result.php
- - src/SCQAT/Runner.php
+Gathering files to analyze... 31 file(s)
+ - too many gathered files to show them here, use -v for verbose output
 
-Running analyzers for language Meta
+> Running analyzers for language Meta
+[Meta > Composer] Checking Composer configuration... OK
 
-[Meta > Composer] Checking Composer configuration... Useless, no change
-
-Running analyzers for language PHP
-
-[PHP > Lint] Checking syntax...
- - src/SCQAT/AnalyzerAbstract.php OK
- - src/SCQAT/CLI.php OK
- - src/SCQAT/CLI/Definition.php OK
- - src/SCQAT/Context.php OK
- - src/SCQAT/FileGatherer.php OK
- - src/SCQAT/Language/Meta.php OK
- - src/SCQAT/Language/Meta/Analyzer/Composer.php OK
- - src/SCQAT/Language/PHP.php OK
- - src/SCQAT/Language/PHP/Analyzer/Lint.php OK
- - src/SCQAT/Language/PHP/Analyzer/PhpCpd.php OK
- - src/SCQAT/Language/PHP/Analyzer/PhpCs.php OK
- - src/SCQAT/Language/PHP/Analyzer/PhpCsFixer.php OK
- - src/SCQAT/Language/PHP/Analyzer/PhpDoc.php OK
- - src/SCQAT/Language/PHP/Analyzer/PhpMd.php OK
- - src/SCQAT/LanguageAbstract.php OK
- - src/SCQAT/Report.php OK
- - src/SCQAT/Result.php OK
- - src/SCQAT/Runner.php OK
-
-[PHP > PhpCpd] Detecting file by file copy/paste...
- - src/SCQAT/AnalyzerAbstract.php OK
- - src/SCQAT/CLI.php OK
- - src/SCQAT/CLI/Definition.php OK
- - src/SCQAT/Context.php OK
- - src/SCQAT/FileGatherer.php OK
- - src/SCQAT/Language/Meta.php OK
- - src/SCQAT/Language/Meta/Analyzer/Composer.php OK
- - src/SCQAT/Language/PHP.php OK
- - src/SCQAT/Language/PHP/Analyzer/Lint.php OK
- - src/SCQAT/Language/PHP/Analyzer/PhpCpd.php OK
- - src/SCQAT/Language/PHP/Analyzer/PhpCs.php OK
- - src/SCQAT/Language/PHP/Analyzer/PhpCsFixer.php OK
- - src/SCQAT/Language/PHP/Analyzer/PhpDoc.php OK
- - src/SCQAT/Language/PHP/Analyzer/PhpMd.php OK
- - src/SCQAT/LanguageAbstract.php OK
- - src/SCQAT/Report.php OK
- - src/SCQAT/Result.php OK
- - src/SCQAT/Runner.php OK
-
-[PHP > PhpCs] PSR-2 Standard checking through phpcs...
- - src/SCQAT/AnalyzerAbstract.php OK
- - src/SCQAT/CLI.php OK
- - src/SCQAT/CLI/Definition.php OK
- - src/SCQAT/Context.php OK
- - src/SCQAT/FileGatherer.php OK
- - src/SCQAT/Language/Meta.php OK
- - src/SCQAT/Language/Meta/Analyzer/Composer.php OK
- - src/SCQAT/Language/PHP.php OK
- - src/SCQAT/Language/PHP/Analyzer/Lint.php OK
- - src/SCQAT/Language/PHP/Analyzer/PhpCpd.php OK
- - src/SCQAT/Language/PHP/Analyzer/PhpCs.php OK
- - src/SCQAT/Language/PHP/Analyzer/PhpCsFixer.php OK
- - src/SCQAT/Language/PHP/Analyzer/PhpDoc.php OK
- - src/SCQAT/Language/PHP/Analyzer/PhpMd.php OK
- - src/SCQAT/LanguageAbstract.php OK
- - src/SCQAT/Report.php OK
- - src/SCQAT/Result.php OK
- - src/SCQAT/Runner.php OK
-
-[PHP > PhpCsFixer] PSR-2 Standard checking through php-cs-fixer...
- - src/SCQAT/AnalyzerAbstract.php OK
- - src/SCQAT/CLI.php OK
- - src/SCQAT/CLI/Definition.php OK
- - src/SCQAT/Context.php OK
- - src/SCQAT/FileGatherer.php OK
- - src/SCQAT/Language/Meta.php OK
- - src/SCQAT/Language/Meta/Analyzer/Composer.php OK
- - src/SCQAT/Language/PHP.php OK
- - src/SCQAT/Language/PHP/Analyzer/Lint.php OK
- - src/SCQAT/Language/PHP/Analyzer/PhpCpd.php OK
- - src/SCQAT/Language/PHP/Analyzer/PhpCs.php OK
- - src/SCQAT/Language/PHP/Analyzer/PhpCsFixer.php OK
- - src/SCQAT/Language/PHP/Analyzer/PhpDoc.php OK
- - src/SCQAT/Language/PHP/Analyzer/PhpMd.php OK
- - src/SCQAT/LanguageAbstract.php OK
- - src/SCQAT/Report.php OK
- - src/SCQAT/Result.php OK
- - src/SCQAT/Runner.php OK
-
-[PHP > PhpDoc] Checking for documentation completeness...
- - src/SCQAT/AnalyzerAbstract.php OK
- - src/SCQAT/CLI.php OK
- - src/SCQAT/CLI/Definition.php OK
- - src/SCQAT/Context.php OK
- - src/SCQAT/FileGatherer.php OK
- - src/SCQAT/Language/Meta.php OK
- - src/SCQAT/Language/Meta/Analyzer/Composer.php OK
- - src/SCQAT/Language/PHP.php OK
- - src/SCQAT/Language/PHP/Analyzer/Lint.php OK
- - src/SCQAT/Language/PHP/Analyzer/PhpCpd.php OK
- - src/SCQAT/Language/PHP/Analyzer/PhpCs.php OK
- - src/SCQAT/Language/PHP/Analyzer/PhpCsFixer.php OK
- - src/SCQAT/Language/PHP/Analyzer/PhpDoc.php OK
- - src/SCQAT/Language/PHP/Analyzer/PhpMd.php OK
- - src/SCQAT/LanguageAbstract.php OK
- - src/SCQAT/Report.php OK
- - src/SCQAT/Result.php OK
- - src/SCQAT/Runner.php OK
-
-[PHP > PhpMd] PHP Mess Detector analysis...
- - src/SCQAT/AnalyzerAbstract.php OK
- - src/SCQAT/CLI.php OK
- - src/SCQAT/CLI/Definition.php OK
- - src/SCQAT/Context.php OK
- - src/SCQAT/FileGatherer.php OK
- - src/SCQAT/Language/Meta.php OK
- - src/SCQAT/Language/Meta/Analyzer/Composer.php OK
- - src/SCQAT/Language/PHP.php OK
- - src/SCQAT/Language/PHP/Analyzer/Lint.php OK
- - src/SCQAT/Language/PHP/Analyzer/PhpCpd.php OK
- - src/SCQAT/Language/PHP/Analyzer/PhpCs.php OK
- - src/SCQAT/Language/PHP/Analyzer/PhpCsFixer.php OK
- - src/SCQAT/Language/PHP/Analyzer/PhpDoc.php OK
- - src/SCQAT/Language/PHP/Analyzer/PhpMd.php OK
- - src/SCQAT/LanguageAbstract.php OK
- - src/SCQAT/Report.php OK
- - src/SCQAT/Result.php OK
- - src/SCQAT/Runner.php OK
+> Running analyzers for language PHP
+[PHP > Lint] Checking syntax... OK
+[PHP > PhpCpd] Detecting file by file copy/paste... OK
+[PHP > PhpCs] PSR-2 Standard checking through phpcs... OK
+[PHP > PhpCsFixer] PSR-2 Standard checking through php-cs-fixer... OK
+[PHP > PhpDoc] Checking for documentation completeness... OK
+[PHP > PhpMd] PHP Mess Detector analysis... OK
 
 Each configured quality test was green
 
-2015-03-04 09:16:34 - Analysed in 14.615466833115s
-[ SCQAT - Standardized Code Quality Assurance Tool (v0.4) ]
+2015-03-14 13:52:07 - Analyzed in 18.094094991684s
+[ SCQAT - Standardized Code Quality Assurance Tool (v0.5) ]
 ```

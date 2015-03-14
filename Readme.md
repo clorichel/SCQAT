@@ -19,7 +19,7 @@ We will assume that you will run `composer.phar` locally placed in a newly creat
 ### Install or update SCQAT
 
 ```
-php composer.phar require clorichel/scqat:0.4
+php composer.phar require clorichel/scqat:0.5
 ```
 
 Thanks to each Composer contributor, yes, that was it. First composer require will install everything, another require in the same folder with a new version number will simply update.
@@ -47,7 +47,7 @@ scqat -d /path/to/sourcecode
 Your code has just been analyzed ! The quality report shown is self-explanatory.
 Not installed globally ? You have to add the path, run `/path/to/folder/vendor/bin/scqat`
 
-Have a look to the [CLI Manual](docs/CLI/Manual.md) for detailed usage.
+Have a look to the [CLI Manual](docs/CLI/Manual.md) for detailed usage. Enpower your projects with a simple `.scqat` YAML file to configure nearly everything as described in the [Configuration Manual](docs/Configuration.md).
 
 ## What is it about
 

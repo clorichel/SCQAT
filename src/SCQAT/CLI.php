@@ -22,7 +22,7 @@ class CLI extends \Symfony\Component\Console\Application
      * CLI Application version
      * @var string
      */
-    private $version = "0.4";
+    private $version = "0.5";
 
     /**
      * SCQAT vendor directory
@@ -139,7 +139,7 @@ class CLI extends \Symfony\Component\Console\Application
 
             // Report timing
             $date = new \DateTime();
-            $this->output->writeln("<comment>".$date->format($this->dateFormatLong)." - Analysed in ".$this->runner->duration."s</comment>");
+            $this->output->writeln("<comment>".$date->format($this->dateFormatLong)." - Analyzed in ".$this->runner->duration."s</comment>");
         } else {
             $this->output->writeln("");
             $this->output->writeln('<info>No file to analyze !</info>');

@@ -1,4 +1,4 @@
-## v0.5 (work in progress)
+## v0.5 (2015-03-14)
 
 Features :
 
@@ -17,6 +17,7 @@ Documentation :
 
  - added updating info in Readme
  - added new `-v` option to the CLI manual
+ - added configuration documentation with full dump
 
 TODO :
 
