@@ -26,6 +26,18 @@ class ReportHooks extends \SCQAT\Report\HooksAbstract
     public $analyzerErrors = array();
 
     /**
+     * The progress bar of the running process, if defined
+     * @var \Symfony\Component\Console\Helper\ProgressBar|null
+     */
+    private $runningProgress = null;
+
+    /**
+     * The current language files count
+     * @var integer
+     */
+    private $languageFilesCount = 0;
+
+    /**
      * Initialize with CLI console output
      * @param \Symfony\Component\Console\Output\OutputInterface $output        Underlying symfony/console output
      * @param boolean                                           $inVerboseMode Determine if CLI has been called in verbose mode or not
@@ -47,6 +59,8 @@ class ReportHooks extends \SCQAT\Report\HooksAbstract
         } else {
             $this->output->write("<info>> Running analyzers for language</info> <comment>".$languageName."</comment>");
         }
+        // First time we use this language, we initialize the files count
+        $this->languageFilesCount = 0;
     }
 
     /**
@@ -73,7 +87,11 @@ class ReportHooks extends \SCQAT\Report\HooksAbstract
             if ($this->inVerboseMode) {
                 $this->output->writeln($message);
             } else {
-                $this->output->write($message." ");
+                $this->runningProgress = new \Symfony\Component\Console\Helper\ProgressBar($this->output, $this->languageFilesCount);
+                $this->runningProgress->setMessage($message);
+                $this->runningProgress->setMessage("", "result");
+                $this->runningProgress->start();
+                $this->runningProgress->setFormat("%message% %current%/%max% %result%");
             }
         }
     }
@@ -84,12 +102,21 @@ class ReportHooks extends \SCQAT\Report\HooksAbstract
     public function analyzerEndOfUse(\SCQAT\AnalyzerAbstract $analyzer)
     {
         if (! $this->inVerboseMode) {
-            if (empty($this->analyzerErrors)) {
-                $this->output->write("<comment>OK</comment>");
-            } else {
-                $this->output->writeln("<error>KO</error>");
-                foreach ($this->analyzerErrors as $outputMessage) {
-                    $this->output->writeln($outputMessage);
+            if ($this->runningProgress) {
+                // End of an analyzer ? We just grab the current step to get the file count !
+                $this->languageFilesCount = $this->runningProgress->getStep();
+                if (empty($this->analyzerErrors)) {
+                    $this->runningProgress->setMessage("<comment>OK</comment>", "result");
+                    $this->runningProgress->finish();
+                    $this->runningProgress = null;
+                } else {
+                    $this->runningProgress->setMessage("<error>KO</error>", "result");
+                    $this->runningProgress->finish();
+                    $this->runningProgress = null;
+                    $this->output->writeln("");
+                    foreach ($this->analyzerErrors as $outputMessage) {
+                        $this->output->writeln($outputMessage);
+                    }
                 }
             }
         }
@@ -100,8 +127,12 @@ class ReportHooks extends \SCQAT\Report\HooksAbstract
      */
     public function analyzingFile($fileName)
     {
-        if (!empty($fileName) && ($this->inVerboseMode)) {
-            $this->output->write(" - ".str_replace($this->context->analyzedDirectory, "", $fileName)." ");
+        if (!empty($fileName)) {
+            if ($this->inVerboseMode) {
+                $this->output->write(" - ".str_replace($this->context->analyzedDirectory, "", $fileName)." ");
+            } else {
+                $this->runningProgress->advance();
+            }
         }
     }
 
