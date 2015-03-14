@@ -113,7 +113,7 @@ class Runner
      * @param  \SCQAT\LanguageAbstract $language     The language class instance
      * @return \SCQAT\AnalyzerAbstract The analyzer class instance
      */
-    private function getAnalyzer($analyzerName, $language)
+    private function getAnalyzer($analyzerName, \SCQAT\LanguageAbstract $language)
     {
         $languageName = $language->getName();
         // Make a new instance if not already made

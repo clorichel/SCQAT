@@ -89,9 +89,9 @@ class CLI extends \Symfony\Component\Console\Application
 
         // Introducing
         $date = new \DateTime();
-        $output->writeln("<fg=white;options=bold;bg=blue>[ ".$this->name." (v".$this->version.") ]</fg=white;options=bold;bg=blue>");
-        $output->writeln("<comment>".$date->format($this->dateFormatLong)." - Starting analysis</comment>");
-        $output->writeln("");
+        $this->output->writeln("<fg=white;options=bold;bg=blue>[ ".$this->name." (v".$this->version.") ]</fg=white;options=bold;bg=blue>");
+        $this->output->writeln("<comment>".$date->format($this->dateFormatLong)." - Starting analysis</comment>");
+        $this->output->writeln("");
 
         // Determining analyzed directory
         $analyzedDirectory = "";
@@ -104,53 +104,53 @@ class CLI extends \Symfony\Component\Console\Application
         $context = new \SCQAT\Context($this->vendorDirectory, $this->analyzedDirectory);
 
         // Gathering files to analyze
-        $output->write("<info>Gathering files to analyze...</info> ");
+        $this->output->write("<info>Gathering files to analyze...</info> ");
         $files = $this->gatherFiles();
-        $output->writeln("<comment>".count($files)." file(s)</comment>");
+        $this->output->writeln("<comment>".count($files)." file(s)</comment>");
 
         $filesCount = count($files);
         if ($filesCount) {
             if ($filesCount <= 10 || $this->input->getOption("verbose")) {
                 foreach ($files as $file) {
-                    $output->writeln(" - ".str_replace($this->analyzedDirectory, "", $file));
+                    $this->output->writeln(" - ".str_replace($this->analyzedDirectory, "", $file));
                 }
             } else {
-                $output->writeln(" - too many gathered files to show them here, use -v for verbose output");
+                $this->output->writeln(" - too many gathered files to show them here, use -v for verbose output");
             }
 
             // Attach gathered files to the context
             $context->files = $files;
             // Attach CLI specific report hooks to the context
-            $context->attachReportHooks(new \SCQAT\CLI\ReportHooks($output, ($filesCount <= 10 || $this->input->getOption("verbose"))));
+            $context->attachReportHooks(new \SCQAT\CLI\ReportHooks($this->output, ($filesCount <= 10 || $this->input->getOption("verbose"))));
 
             // Run SCQAT runner on the context
             $this->runner->run($context);
 
             // Output the result
             if ($context->hadError === false) {
-                $output->writeln("");
-                $output->writeln('<info>Each configured quality test was green</info>');
-                $output->writeln("");
+                $this->output->writeln("");
+                $this->output->writeln('<info>Each configured quality test was green</info>');
+                $this->output->writeln("");
             } else {
-                $output->writeln("");
-                $output->writeln('<error>There were error(s)</error>');
-                $output->writeln("");
+                $this->output->writeln("");
+                $this->output->writeln('<error>There were error(s)</error>');
+                $this->output->writeln("");
             }
 
             // Report timing
             $date = new \DateTime();
-            $output->writeln("<comment>".$date->format($this->dateFormatLong)." - Analysed in ".$this->runner->duration."s</comment>");
+            $this->output->writeln("<comment>".$date->format($this->dateFormatLong)." - Analysed in ".$this->runner->duration."s</comment>");
         } else {
-            $output->writeln("");
-            $output->writeln('<info>No file to analyze !</info>');
-            $output->writeln("");
+            $this->output->writeln("");
+            $this->output->writeln('<info>No file to analyze !</info>');
+            $this->output->writeln("");
             // Ending date only
             $date = new \DateTime();
-            $output->writeln("<comment>".$date->format($this->dateFormatLong)." - Nothing analyzed</comment>");
+            $this->output->writeln("<comment>".$date->format($this->dateFormatLong)." - Nothing analyzed</comment>");
         }
 
         // Ending
-        $output->writeln("<fg=white;options=bold;bg=blue>[ ".$this->name." (v".$this->version.") ]</fg=white;options=bold;bg=blue>");
+        $this->output->writeln("<fg=white;options=bold;bg=blue>[ ".$this->name." (v".$this->version.") ]</fg=white;options=bold;bg=blue>");
 
         // Exit CLI application on error if any were found
         if ($context->hadError !== false) {
