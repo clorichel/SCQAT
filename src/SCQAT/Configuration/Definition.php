@@ -19,16 +19,19 @@ class Definition implements ConfigurationInterface
         $scqatNode = $treeBuilder->root("SCQAT");
         $scqatNode
             ->children()
-                ->arrayNode("Reports")
+                ->variableNode("Reports")
                     ->info("List the report(s) to output. 'print' is the only one supported for now") // Multiple values can be used to output multiple reports.
                     ->cannotBeEmpty()
-                    ->isRequired()
                     ->defaultValue(array("print"))
-                    ->prototype("scalar")
-                        ->validate()
-                        ->ifNotInArray(array("print", "html"))
-                            ->thenInvalid("Invalid report output value %s")
-                        ->end()
+                    ->validate()
+                        ->always(function ($values) {
+                            foreach ((array) $values as $value) {
+                                if (! in_array((string) $value, array("print", "html"))) {
+                                    throw new \Symfony\Component\Config\Definition\Exception\InvalidTypeException("Invalid report output value ".$value);
+                                }
+                            }
+                            return (array) $values;
+                        })
                     ->end()
                 ->end()
                 ->arrayNode("Analysis")

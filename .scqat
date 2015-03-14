@@ -1,6 +1,3 @@
-Reports:
-    - print
-
 Analyzers:
     PHP:
         command:              /usr/bin/php
