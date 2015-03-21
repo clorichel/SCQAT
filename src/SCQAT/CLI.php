@@ -178,6 +178,8 @@ class CLI extends \Symfony\Component\Console\Application
         } elseif ($this->input->getOption("pre-commit") === true) {
             // User wants to analyze all staged files (before commit)
             return $fileGatherer->gitPreCommit();
+        } elseif ($this->input->getOption("diff")) {
+            return $fileGatherer->gitDiff($this->input->getOption("diff"));
         } else {
             // Default action, user wants to analyze all files in the git repository
             try {

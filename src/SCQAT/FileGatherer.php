@@ -87,7 +87,7 @@ class FileGatherer
 
     /**
      * Gather git staged files only
-     * @return boolean True if gathering went well, false on any problem
+     * @return array List of all git staged files
      */
     public function gitPreCommit()
     {
@@ -105,6 +105,25 @@ class FileGatherer
 
         if (!$process->isSuccessful()) {
             throw new \Exception("Unable to get staged files");
+        }
+
+        return $this->explodeFilesList(trim($process->getOutput()));
+    }
+
+    /**
+     * Gather git diff files from given references
+     * @see git-diff for references format
+     * @param  string $references Reference or references to compare (ie "develop master", or "develop" to compare with its parent)
+     * @return array  List of all git diff files
+     */
+    public function gitDiff($references)
+    {
+        // Listing files changed from references passed
+        $process = new Process($this->getCdToAnalyzedDir()."git diff ".(string) $references." --name-status | egrep '^(A|M)' | awk '{print $2;}'");
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            throw new \Exception("Unable to get diff files");
         }
 
         return $this->explodeFilesList(trim($process->getOutput()));

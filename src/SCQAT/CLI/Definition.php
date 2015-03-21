@@ -23,6 +23,7 @@ class Definition extends InputDefinition
             new InputOption("verbose", "v", InputOption::VALUE_NONE),
             new InputOption("modified", null, InputOption::VALUE_NONE),
             new InputOption("pre-commit", null, InputOption::VALUE_NONE),
+            new InputOption("diff", null, InputOption::VALUE_REQUIRED),
         ));
     }
 }

@@ -1,3 +1,22 @@
+## v0.6 (work in progress)
+
+Features :
+
+ - replaced files lists with a progress indicator when lot of files and not in verbose mode
+ - added `--diff` CLI option to gather files on a git diff between refs
+
+Bugfixes :
+
+ - return value in write context fatal error for PHP < 5.5
+
+Documentation :
+
+ - added new `--diff` option to the CLI manual
+
+TODO :
+
+ - 
+
 ## v0.5 (2015-03-14)
 
 Features :
