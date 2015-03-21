@@ -37,7 +37,8 @@ class PhpCpd extends \SCQAT\AnalyzerAbstract
             array_pop($outputLines);
             foreach ($outputLines as $line) {
                 // do not care empty lines
-                if (empty(trim($line))) {
+                $trimmedLine = trim($line);
+                if (empty($trimmedLine)) {
                     continue;
                 }
                 if (strpos($line, $analyzedFileName) !== false) {

@@ -22,7 +22,7 @@ class CLI extends \Symfony\Component\Console\Application
      * CLI Application version
      * @var string
      */
-    private $version = "0.5";
+    private $version = "0.6";
 
     /**
      * SCQAT vendor directory
@@ -95,7 +95,8 @@ class CLI extends \Symfony\Component\Console\Application
 
         // Determining analyzed directory
         $analyzedDirectory = "";
-        if (!empty($this->input->getOption("directory"))) {
+        $optionDirectory = $this->input->getOption("directory");
+        if (!empty($optionDirectory)) {
             $analyzedDirectory = rtrim($this->input->getOption("directory"), "/")."/";
         }
         $this->analyzedDirectory = realpath($analyzedDirectory).DIRECTORY_SEPARATOR;
