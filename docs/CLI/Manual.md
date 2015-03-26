@@ -8,7 +8,7 @@ scqat - Run a set of industry standard code quality analyzers on your source cod
 
 ```
 scqat [ [-f|--file="<file>"] | [-d|--directory="<directory>"] ]
-        [--modified] [--pre-commit]
+      [ [--modified] | [--pre-commit] | [--diff="ref1[ ref2]"] ]
         [-v|--verbose]
 ```
 
@@ -37,6 +37,11 @@ Analyze all modified files in the GIT repository (staged, unstaged and untracked
 `--pre-commit`
 
 Analyze all staged files changed from local revision to HEAD revision within the GIT repository
+
+`--diff="ref1[ ref2]"`
+
+Analyze all files in the `git diff ref1[ ref2]` within the GIT repository
+See `man git-diff` for references format
 
 `-v`
 `--verbose`
