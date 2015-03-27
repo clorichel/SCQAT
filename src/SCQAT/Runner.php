@@ -10,12 +10,6 @@ use Symfony\Component\Finder\Finder;
 class Runner
 {
     /**
-     * Runner analysis duration in s
-     * @var float
-     */
-    public $duration = null;
-
-    /**
      * The SCQAT Context on which to run
      * @var \SCQAT\Context
      */
@@ -180,7 +174,7 @@ class Runner
             $this->context->report->runHook("languageEndOfUse", $languageName);
         }
 
-        $this->duration = (microtime(true) - $started);
+        $this->context->report->runHook("ending", (microtime(true) - $started));
     }
 
     /**

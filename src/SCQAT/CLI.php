@@ -55,12 +55,6 @@ class CLI extends \Symfony\Component\Console\Application
     private $input;
 
     /**
-     * The long date format (as expected by PHP date function)
-     * @var string
-     */
-    private $dateFormatLong = "Y-m-d H:i:s";
-
-    /**
      * Initializing and building parent symfony/console application
      * @param string $vendorDirectory Full path to SCQAT vendor directory
      */
@@ -87,12 +81,6 @@ class CLI extends \Symfony\Component\Console\Application
         // Binding input definition
         $this->input->bind(new \SCQAT\CLI\Definition());
 
-        // Introducing
-        $date = new \DateTime();
-        $this->output->writeln("<fg=white;options=bold;bg=blue>[ ".$this->name." (v".$this->version.") ]</fg=white;options=bold;bg=blue>");
-        $this->output->writeln("<comment>".$date->format($this->dateFormatLong)." - Starting analysis</comment>");
-        $this->output->writeln("");
-
         // Determining analyzed directory
         $analyzedDirectory = "";
         $optionDirectory = $this->input->getOption("directory");
@@ -103,55 +91,22 @@ class CLI extends \Symfony\Component\Console\Application
 
         // Creating SCQAT Context
         $context = new \SCQAT\Context($this->vendorDirectory, $this->analyzedDirectory);
+        
+        // Attach CLI specific report hooks to the context if configuration allows it
+        if (in_array("console", $context->configuration["Reports"])) {
+            $context->attachReportHooks(new \SCQAT\CLI\ReportHooks($this->output, $this->input->getOption("verbose")));
+        }
 
         // Gathering files to analyze
-        $this->output->write("<info>Gathering files to analyze...</info> ");
-        $files = $this->gatherFiles();
-        $this->output->writeln("<comment>".count($files)." file(s)</comment>");
+        $files = $this->gatherFiles($context);
 
-        $filesCount = count($files);
-        if ($filesCount) {
-            if ($filesCount <= 10 || $this->input->getOption("verbose")) {
-                foreach ($files as $file) {
-                    $this->output->writeln(" - ".str_replace($this->analyzedDirectory, "", $file));
-                }
-            } else {
-                $this->output->writeln(" - too many gathered files to show them here, use -v for verbose output");
-            }
-
+        if (count($files)) {
             // Attach gathered files to the context
             $context->files = $files;
-            // Attach CLI specific report hooks to the context
-            $context->attachReportHooks(new \SCQAT\CLI\ReportHooks($this->output, ($filesCount <= 10 || $this->input->getOption("verbose"))));
 
             // Run SCQAT runner on the context
             $this->runner->run($context);
-
-            // Output the result
-            if ($context->hadError === false) {
-                $this->output->writeln("");
-                $this->output->writeln('<info>Each configured quality test was green</info>');
-                $this->output->writeln("");
-            } else {
-                $this->output->writeln("");
-                $this->output->writeln('<error>There were error(s)</error>');
-                $this->output->writeln("");
-            }
-
-            // Report timing
-            $date = new \DateTime();
-            $this->output->writeln("<comment>".$date->format($this->dateFormatLong)." - Analyzed in ".$this->runner->duration."s</comment>");
-        } else {
-            $this->output->writeln("");
-            $this->output->writeln('<info>No file to analyze !</info>');
-            $this->output->writeln("");
-            // Ending date only
-            $date = new \DateTime();
-            $this->output->writeln("<comment>".$date->format($this->dateFormatLong)." - Nothing analyzed</comment>");
         }
-
-        // Ending
-        $this->output->writeln("<fg=white;options=bold;bg=blue>[ ".$this->name." (v".$this->version.") ]</fg=white;options=bold;bg=blue>");
 
         // Exit CLI application on error if any were found
         if ($context->hadError !== false) {
@@ -161,35 +116,42 @@ class CLI extends \Symfony\Component\Console\Application
 
     /**
      * Gathering files depending of CLI option passed
-     * @return boolean True if gathering went well, false on any problem
+     * @param  \SCQAT\Context $context The SCQAT Context, used to trigger hooks
+     * @return boolean        True if gathering went well, false on any problem
      */
-    private function gatherFiles()
+    private function gatherFiles(\SCQAT\Context $context)
     {
+        $context->report->runHook("gatheringFiles");
+
         $files = $this->input->getOption("file");
         if (!empty($files)) {
             return $files;
         }
 
         $fileGatherer = new \SCQAT\FileGatherer($this->analyzedDirectory);
+        $filesGathered = array();
 
         if ($this->input->getOption("modified") === true) {
             // User wants to analyze all modified files (staged, unstaged and untracked)
-            return $fileGatherer->gitModified();
+            $filesGathered = $fileGatherer->gitModified();
         } elseif ($this->input->getOption("pre-commit") === true) {
             // User wants to analyze all staged files (before commit)
-            return $fileGatherer->gitPreCommit();
+            $filesGathered = $fileGatherer->gitPreCommit();
         } elseif ($this->input->getOption("diff")) {
-            return $fileGatherer->gitDiff($this->input->getOption("diff"));
+            $filesGathered = $fileGatherer->gitDiff($this->input->getOption("diff"));
         } else {
             // Default action, user wants to analyze all files in the git repository
             try {
-                return $fileGatherer->gitAll();
+                $filesGathered = $fileGatherer->gitAll();
             } catch (\Exception $e) {
                 // Not a git repository ? Just grab all files
                 if ($e->getCode() == 101) {
-                    return $fileGatherer->all();
+                    $filesGathered = $fileGatherer->all();
                 }
             }
         }
+
+        $context->report->runHook("gatheredFiles", $filesGathered);
+        return $filesGathered;
     }
 }

@@ -4,6 +4,10 @@ Features :
 
  - replaced files lists with a progress indicator when lot of files and not in verbose mode
  - added `--diff` CLI option to gather files on a git diff between refs
+ - renamed "print" report configuration to "console"
+ - added report hooks to effectively manage all "Reports" output logic to HooksAbstract
+ - moved current output logic from CLI application to CLI ReportHooks
+ - do no more attach CLI ReportHooks if "console" is not in "Reports" configuration
 
 Bugfixes :
 
@@ -12,10 +16,11 @@ Bugfixes :
 Documentation :
 
  - added new `--diff` option to the CLI manual
+ - updated configuration manual with renamed report "console"
 
 TODO :
 
- - 
+ - find a way to refactor hooksabstract (and CLI ReportHooks) to lower numbers of methods
 
 ## v0.5 (2015-03-14)
 

@@ -103,7 +103,7 @@ class Report
      * @param string $hookName  The hook to trigger (its method name)
      * @param mixed  $arguments One or more argument to pass to final hook methods (taken by func_get_args)
      */
-    public function runHook($hookName, $arguments)
+    public function runHook($hookName, $arguments = array())
     {
         $args = func_get_args();
         $hookName = array_shift($args);
@@ -122,5 +122,6 @@ class Report
     public function attachHooks(\SCQAT\Report\HooksAbstract $reportHooks)
     {
         $this->hooks[] = $reportHooks;
+        $this->runHook("introduction");
     }
 }

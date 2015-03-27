@@ -38,6 +38,30 @@ class ReportHooks extends \SCQAT\Report\HooksAbstract
     private $languageFilesCount = 0;
 
     /**
+     * The long date format (as expected by PHP date function)
+     * @var string
+     */
+    private $dateFormatLong = "Y-m-d H:i:s";
+
+    /**
+     * CLI Application name
+     * @var string
+     */
+    private $name = "SCQAT - Standardized Code Quality Assurance Tool";
+
+    /**
+     * CLI Application version
+     * @var string
+     */
+    private $version = "0.6";
+
+    /**
+     * Total number of files to be analyzed
+     * @var integer
+     */
+    private $filesCount = 0;
+
+    /**
      * Initialize with CLI console output
      * @param \Symfony\Component\Console\Output\OutputInterface $output        Underlying symfony/console output
      * @param boolean                                           $inVerboseMode Determine if CLI has been called in verbose mode or not
@@ -46,6 +70,77 @@ class ReportHooks extends \SCQAT\Report\HooksAbstract
     {
         $this->output = $output;
         $this->inVerboseMode = $inVerboseMode;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function introduction()
+    {
+        // Introducing
+        $date = new \DateTime();
+        $this->output->writeln("<fg=white;options=bold;bg=blue>[ ".$this->name." (v".$this->version.") ]</fg=white;options=bold;bg=blue>");
+        $this->output->writeln("<comment>".$date->format($this->dateFormatLong)." - Starting analysis</comment>");
+        $this->output->writeln("");
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function ending($duration)
+    {
+        if ($this->filesCount) {
+            // Output the result
+            if ($this->context->hadError === false) {
+                $this->output->writeln("");
+                $this->output->writeln('<info>Each configured quality test was green</info>');
+                $this->output->writeln("");
+            } else {
+                $this->output->writeln("");
+                $this->output->writeln('<error>There were error(s)</error>');
+                $this->output->writeln("");
+            }
+
+            // Report timing
+            $date = new \DateTime();
+            $this->output->writeln("<comment>".$date->format($this->dateFormatLong)." - Analyzed in ".$duration."s</comment>");
+        } else {
+            // Ending date only
+            $date = new \DateTime();
+            $this->output->writeln("<comment>".$date->format($this->dateFormatLong)." - Nothing analyzed</comment>");
+        }
+        $this->output->writeln("<fg=white;options=bold;bg=blue>[ ".$this->name." (v".$this->version.") ]</fg=white;options=bold;bg=blue>");
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function gatheringFiles()
+    {
+        $this->output->write("<info>Gathering files to analyze...</info> ");
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function gatheredFiles($filesGathered)
+    {
+        $this->filesCount = count($filesGathered);
+        if ($this->filesCount) {
+            $this->output->writeln("<comment>".$this->filesCount." file(s)</comment>");
+            if ($this->filesCount <= 10 || $this->inVerboseMode) {
+                foreach ($filesGathered as $file) {
+                    $this->output->writeln(" - ".str_replace($this->context->analyzedDirectory, "", $file));
+                }
+            } else {
+                $this->output->writeln(" - too many gathered files to show them here, use -v for verbose output");
+            }
+        } else {
+            $this->output->writeln("");
+            $this->output->writeln('<info>No file to analyze !</info>');
+            $this->output->writeln("");
+            $this->context->report->runHook("ending", 0);
+        }
     }
 
     /**

@@ -9,11 +9,11 @@ If you need more power or face complex cases, be happy to know SCQAT is fully co
 Here are all possible options you can use with appropriate comments.
 
 ```
-# List the report(s) to output. 'print' is the only one supported for now
+# List the report(s) to output. 'console' is the only one supported for now
 Reports:
 
     # Default:
-    - print
+    - console
 
 # White- or blacklisting languages and/or analyzers to run
 Analysis:

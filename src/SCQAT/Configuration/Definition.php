@@ -20,13 +20,13 @@ class Definition implements ConfigurationInterface
         $scqatNode
             ->children()
                 ->variableNode("Reports")
-                    ->info("List the report(s) to output. 'print' is the only one supported for now") // Multiple values can be used to output multiple reports.
+                    ->info("List the report(s) to output. 'console' is the only one supported for now") // Multiple values can be used to output multiple reports.
                     ->cannotBeEmpty()
-                    ->defaultValue(array("print"))
+                    ->defaultValue(array("console"))
                     ->validate()
                         ->always(function ($values) {
                             foreach ((array) $values as $value) {
-                                if (! in_array((string) $value, array("print", "html"))) {
+                                if (! in_array((string) $value, array("console", "html"))) {
                                     throw new \Symfony\Component\Config\Definition\Exception\InvalidTypeException("Invalid report output value ".$value);
                                 }
                             }
